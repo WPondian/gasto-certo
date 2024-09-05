@@ -1,6 +1,7 @@
 import express from 'express';
-import mysql from 'mysql2/promise';
+import mysql from 'mysql2';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 // Configurações básicas
 const app = express();
@@ -8,45 +9,49 @@ const port = 3000;
 
 // Middleware para parsear JSON
 app.use(bodyParser.json());
+app.use(cors());
 
-async function connect(params) {
-
-const connection = await mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '@PondianMSQL',
-  database: 'db_gasto_certo'
+let connection2 = await mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '@PondianMSQL',
+    database: 'db_gasto_certo'
 });
 
-try {
-    console.log('Conectado ao banco de dados MySQL!');
-  } catch (error) {
-    console.error('Erro ao conectar ao banco de dados:', error);
-  }
-}
-
-connect();
+connection2.connect(error => {
+    if (error) {
+        console.error('Erro ao conectar ao banco de dados:', error);
+    } else {
+        console.log('Conectado ao banco de dados MySQL!');
+    }
+});
 
 app.post('/salvar', async (req, res) => {
-    const { nome, email } = req.body; // Captura os dados enviados via AJAX
-  
-    try {
-      // Inserindo os dados no banco de dados
-      const [result] = await connection.execute(
-        'INSERT INTO usuarios (nome, email) VALUES (?, ?)',
-        [nome, email]
-      );
-  
-      // Verifica se a inserção foi bem-sucedida
-      if (result.affectedRows > 0) {
-        res.status(200).send('Dados inseridos com sucesso');
-      } else {
-        res.status(500).send('Erro ao inserir os dados');
-      }
-    } catch (error) {
-      console.error('Erro ao inserir dados no banco:', error);
-      res.status(500).send('Erro no servidor');
-    }
+    const { nomeGasto,
+        origemGasto,
+        valorGasto,
+        dataGasto } = req.body;
+
+    const query = 'INSERT INTO gasto (nome, origem, valor, data_gasto) VALUES (?, ?, ?, ?)';
+    connection2.query(query, [nomeGasto, origemGasto, valorGasto, dataGasto],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err });
+            }
+            return res.json({ id: result.insertId, ...req.body });
+        });
+});
+
+app.get('/listar', async (req, res) => {
+
+    const query = 'SELECT * FROM gasto';
+    connection2.query(query,
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err });
+            }
+            return res.json(result);
+        });
 });
 
 app.listen(port, () => {

@@ -13,7 +13,7 @@
                 <label for="nomeGasto"
                     class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-gray-600 focus-within:ring-1 focus-within:ring-gray-600">
                     <input type="text" id="nomeGasto" v-model="nomeGasto"
-                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 focus:outline-none focus:ring-0"
+                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 px-2 focus:outline-none focus:ring-0"
                         placeholder="nomeGasto" />
 
                     <span
@@ -26,7 +26,7 @@
                 <label for="origemGasto"
                     class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-gray-600 focus-within:ring-1 focus-within:ring-gray-600">
                     <input type="text" id="origemGasto" v-model="origemGasto"
-                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 focus:outline-none focus:ring-0"
+                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 px-2 focus:outline-none focus:ring-0"
                         placeholder="origemGasto" />
 
                     <span
@@ -38,12 +38,12 @@
             <div class="py-2">
                 <label for="valorGasto"
                     class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-gray-600 focus-within:ring-1 focus-within:ring-gray-600">
-                    <input type="text" id="valorGasto" v-model="valorGasto"
-                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 focus:outline-none focus:ring-0"
+                    <input type="text" id="valorGasto" v-model="valorGasto" v-money3="config"
+                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 px-2 focus:outline-none focus:ring-0"
                         placeholder="valorGasto" />
 
                     <span
-                        class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                        class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-1 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
                         Valor*
                     </span>
                 </label>
@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="flex items-center justify-center">
-                <button type="button"
+                <button type="button" @click="enviarDados"
                     class="inline-block rounded bg-gray-600 px-8 py-3 text-white focus:outline-none focus:ring hover:bg-gray-800">
                     Cadastrar
                 </button>
@@ -65,9 +65,18 @@
 </template>
 
 <script>
+import { unformat } from 'v-money3';
+
 export default {
     data() {
         return {
+            config: {
+                prefix: 'R$ ',
+                thousands: '.',
+                decimal: ',',
+                precision: 2,
+                disableNegative: true,
+            },
             nomeGasto: '',
             origemGasto: '',
             valorGasto: '',
@@ -78,9 +87,9 @@ export default {
         async enviarDados() {
             const dados = {
                 nomeGasto: this.nomeGasto,
-                valorGasto: this.valorGasto,
-                nomeGasto: this.nomeGasto,
-                nomeGasto: this.nomeGasto,
+                origemGasto: this.origemGasto,
+                valorGasto: unformat(this.valorGasto, this.config),
+                dataGasto: this.dataGasto,
             };
 
             try {
@@ -93,7 +102,7 @@ export default {
                 });
 
                 if (resposta.ok) {
-                    alert('Dados enviados com sucesso!');
+                    this.$router.push('/gastos')
                 } else {
                     alert('Erro ao enviar dados!');
                 }
@@ -104,6 +113,7 @@ export default {
         }
     }
 };
+
 </script>
 
 <style></style>

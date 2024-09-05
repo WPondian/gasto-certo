@@ -15,8 +15,10 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@vuepic/vue-datepicker": "^9.0.2",
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "mysql2": "^3.11.0",
+    "v-money3": "^3.24.1",
     "vue": "^3.4.37",
     "vue-router": "^4.4.3"
   },

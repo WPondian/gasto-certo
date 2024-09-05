@@ -15,6 +15,8 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 
 import routes from './routes';
 
+import money from 'v-money3'
+
 /* add icons to the library */
 library.add(fas, far, fab);
 
@@ -23,6 +25,8 @@ const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.component('VueDatePicker', VueDatePicker);
 
+
+app.use(money);
 app.use(routes);
 
 app.mount('#app')
