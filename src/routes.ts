@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from './views/home.vue';
-import Gastos from './views/gastos/listagem-gastos.vue';
+import GastosListagem from './views/gastos/listagem-gastos.vue';
+import GastoCadastro from './views/gastos/cadastro-gastos.vue';
 import notFound from './views/notFound/not-found.vue';
 
 const routes = [
@@ -12,8 +13,13 @@ const routes = [
     },
     {
         path: '/gastos',
-        name: 'Gastos',
-        component: Gastos
+        name: 'GastosListagem',
+        component: GastosListagem
+    },
+    {
+        path: '/gastos-cadastro',
+        name: 'GastoCadastro',
+        component: GastoCadastro
     }
 ];
 
