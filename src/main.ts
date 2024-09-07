@@ -17,6 +17,8 @@ import routes from './routes';
 
 import money from 'v-money3'
 
+import VueApexCharts from "vue3-apexcharts";
+
 /* add icons to the library */
 library.add(fas, far, fab);
 
@@ -28,5 +30,6 @@ app.component('VueDatePicker', VueDatePicker);
 
 app.use(money);
 app.use(routes);
+app.use(VueApexCharts);
 
 app.mount('#app')
