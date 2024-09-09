@@ -3,8 +3,6 @@ import Menu from './components/Menu.vue'
 import { ref } from 'vue';
 import type { PersonInterface } from './types/Person';
 
-
-
 let age2 = ref<string>('leo');
 let age = ref<number | string>(41);
 let person = ref<PersonInterface>({
@@ -20,7 +18,7 @@ let teste: PersonInterface = {
 }
 
 
-let arrayPeople = ref(<PersonInterface[]>)([
+let arrayPeople = ref<PersonInterface[]>([
     {
         id: 0 as number,
         name: 'Willian' as string,
