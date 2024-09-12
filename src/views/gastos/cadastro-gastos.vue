@@ -64,55 +64,57 @@
     </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { unformat } from 'v-money3';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router'
 
-export default {
-    data() {
-        return {
-            config: {
-                prefix: 'R$ ',
-                thousands: '.',
-                decimal: ',',
-                precision: 2,
-                disableNegative: true,
+
+const router = useRouter()
+
+let config = ref<object>({
+    prefix: 'R$ ',
+    thousands: '.',
+    decimal: ',',
+    precision: 2,
+    disableNegative: true,
+})
+
+let nomeGasto = ref<string>('');
+let origemGasto = ref<string>('');
+let valorGasto = ref<string>('');
+let dataGasto = ref<string>('');
+
+
+
+async function enviarDados() {
+    const dados: object = {
+        nomeGasto: nomeGasto.value as string,
+        origemGasto: origemGasto.value as string,
+        valorGasto: unformat(valorGasto.value, config) as string,
+        dataGasto: dataGasto.value as string,
+    };
+
+    try {
+        const resposta = await fetch('http://localhost:3000/salvar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
             },
-            nomeGasto: '',
-            origemGasto: '',
-            valorGasto: '',
-            dataGasto: '',
-        };
-    },
-    methods: {
-        async enviarDados() {
-            const dados = {
-                nomeGasto: this.nomeGasto,
-                origemGasto: this.origemGasto,
-                valorGasto: unformat(this.valorGasto, this.config),
-                dataGasto: this.dataGasto,
-            };
+            body: JSON.stringify(dados)
+        });
 
-            try {
-                const resposta = await fetch('http://localhost:3000/salvar', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                if (resposta.ok) {
-                    this.$router.push('/gastos')
-                } else {
-                    alert('Erro ao enviar dados!');
-                }
-            } catch (error) {
-                console.error('Erro ao fazer a requisição:', error);
-                alert('Erro ao enviar dados!');
-            }
+        if (resposta.ok) {
+            router.push('/gastos')
+        } else {
+            alert('Erro ao enviar dados!');
         }
+    } catch (error) {
+        console.error('Erro ao fazer a requisição:', error);
+        alert('Erro ao enviar dados!');
     }
-};
+}
+
 
 </script>
 
