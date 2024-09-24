@@ -29,11 +29,12 @@ connection2.connect(error => {
 app.post('/salvar', async (req, res) => {
     const { nomeGasto,
         origemGasto,
+        categoriaGasto,
         valorGasto,
         dataGasto } = req.body;
 
-    const query = 'INSERT INTO gasto (nome, origem, valor, data_gasto) VALUES (?, ?, ?, ?)';
-    connection2.query(query, [nomeGasto, origemGasto, valorGasto, dataGasto],
+    const query = 'INSERT INTO gasto (nome, origem, categoria, valor, data_gasto) VALUES (?, ?, ?, ?, ?)';
+    connection2.query(query, [nomeGasto, origemGasto, categoriaGasto, valorGasto, dataGasto],
         (err, result) => {
             if (err) {
                 return res.status(500).json({ error: err });
