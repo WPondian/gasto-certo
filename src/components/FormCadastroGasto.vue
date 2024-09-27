@@ -1,95 +1,85 @@
 <template>
-    <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-        <div class="mx-auto max-w-lg text-center">
-            <h1 class="text-2xl font-bold sm:text-3xl">Cadastro de Gasto</h1>
+    <div class="grid grid-cols-12 w-full">
+        <div class="col-span-4 col-start-5 content-center">
+            <div class="border py-10 rounded-2xl shadow-2xl">
+                <div class="mx-auto max-w-lg text-center">
+                    <h1 class="text-2xl font-bold sm:text-3xl uppercase">Cadastro de Gasto</h1>
 
-            <p class="mt-4 text-gray-500">
-                Por favor, informe dados do gasto.
-            </p>
-        </div>
-
-        <form id="cadastroGasto" autocomplete="off" class="mx-auto mb-0 mt-8 max-w-md space-y-4">
-            <div class="py-2">
-                <label for="nomeGasto"
-                    class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-gray-600 focus-within:ring-1 focus-within:ring-gray-600">
-                    <input type="text" id="nomeGasto" v-model="nomeGasto" required
-                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 px-2 focus:outline-none focus:ring-0"
-                        placeholder="nomeGasto" />
-
-                    <span
-                        class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-                        Nome
-                    </span>
-                </label>
-            </div>
-            <div class="py-2">
-
-                <label for="categoriaGasto"
-                    class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-gray-600 focus-within:ring-1 focus-within:ring-gray-600">
-
-                    <select name="HeadlineAct" id="categoriaGasto" v-model="categoriaGasto" required
-                        class="peer w-full border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 px-2 focus:outline-none focus:ring-0">
-                        <option value="">Selecione uma opção...</option>
-                        <option value="Comida">Comida</option>
-                        <option value="Lazer">Lazer</option>
-                        <option value="Investimento">Investimento</option>
-                        <option value="Custo Fixo">Custo Fixo</option>
-                        <option value="Aquisição">Aquisição</option>
-                        <option value="Mercado">Mercado</option>
-                        <option value="Cotidiano">Cotidiano</option>
-                    </select>
-
-                    <span
-                        class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-                        Categoria
-                    </span>
-                </label>
-            </div>
-            <div class="py-2">
-                <label for="origemGasto"
-                    class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-gray-600 focus-within:ring-1 focus-within:ring-gray-600">
-                    <input type="text" id="origemGasto" v-model="origemGasto"
-                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 px-2 focus:outline-none focus:ring-0"
-                        placeholder="origemGasto" required />
-
-                    <span
-                        class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-                        Origem
-                    </span>
-                </label>
-            </div>
-            <div class="py-2">
-                <label for="valorGasto"
-                    class="relative block rounded-md border border-gray-200 shadow-sm focus-within:border-gray-600 focus-within:ring-1 focus-within:ring-gray-600">
-                    <input type="text" id="valorGasto" v-model="valorGasto" v-money3="config"
-                        class="peer border-none bg-transparent placeholder-transparent focus:border-transparent py-1.5 px-2 focus:outline-none focus:ring-0"
-                        placeholder="valorGasto" required />
-
-                    <span
-                        class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-1 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-                        Valor*
-                    </span>
-                </label>
-            </div>
-            <div class="py-2">
-                <div class="relative">
-                    <VueDatePicker :enable-time-picker="false" placeholder="Data" v-model="dataGasto">
-                    </VueDatePicker>
+                    <p class="mt-4 text-gray-500 font-medium">
+                        Por favor, informe dados do gasto.
+                    </p>
                 </div>
+
+                <form id="cadastroGasto" autocomplete="off" class="mx-auto mb-0 mt-2 max-w-md space-y-4">
+                    <div class="py-1">
+                        <label for="nomeGasto" class="block font-medium text-gray-700"> Nome*: </label>
+
+                        <input type="text" v-model="nomeGasto" id="nomeGasto" placeholder="Informe o nome do gasto..."
+                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
+                            required />
+                    </div>
+                    <div class="py-1">
+                        <label for="categoriaGasto" class="block font-medium text-gray-700"> Categoria*: </label>
+                        <select name="categoriaGasto" id="categoriaGasto" v-model="categoriaGasto" required
+                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 cursor-pointer font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2">
+                            <option class="text-gray-600 font-semibold bg-gray-200" value="" disabled selected>Selecione
+                                uma
+                                opção...
+                            </option>
+                            <option class="text-gray-600 font-semibold" value="Comida">Comida</option>
+                            <option class="text-gray-600 font-semibold" value="Lazer">Lazer</option>
+                            <option class="text-gray-600 font-semibold" value="Investimento">Investimento</option>
+                            <option class="text-gray-600 font-semibold" value="Custo Fixo">Custo Fixo</option>
+                            <option class="text-gray-600 font-semibold" value="Aquisição">Aquisição</option>
+                            <option class="text-gray-600 font-semibold" value="Mercado">Mercado</option>
+                            <option class="text-gray-600 font-semibold" value="Cotidiano">Cotidiano</option>
+                        </select>
+
+                    </div>
+                    <div class="py-1">
+                        <label for="origemGasto" class="block font-medium text-gray-700"> Origem*: </label>
+
+                        <input type="text" v-model="origemGasto" id="origemGasto"
+                            placeholder="Informe a origem do gasto..."
+                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
+                            required />
+                    </div>
+                    <div class="py-1">
+                        <label for="valorGasto" class="block font-medium text-gray-700"> Valor*: </label>
+                        <input type="text" v-model="valorGasto" v-money3="config" id="valorGasto" maxlength="10"
+                            placeholder="Informe a origem do gasto..."
+                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
+                            required />
+                    </div>
+                    <div class="py-1">
+                        <div class="relative">
+                            <label for="dataGasto" class="block font-medium text-gray-700"> Data*: </label>
+                            <VueDatePicker id="dataGasto"
+                                class="mt-1 rounded-md border-padrao-campo text-gray-600 font-semibold"
+                                :enable-time-picker="false" placeholder="Data" v-model="dataGasto">
+                            </VueDatePicker>
+                        </div>
+                    </div>
+                    <div class="flex pt-6 items-center justify-center">
+                        <router-link to="/gastos" id="btnCancelarCadastro"
+                            class="inline-block rounded-xl mr-6 bg-red-700 px-5 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-red-600  hover:px-7 hover:py-3 hover:mt-0 ease-in duration-300">
+                            <font-awesome-icon icon="fa-solid fa-left-long" />
+                            Cancelar
+                        </router-link>
+                        <button type="button" @click="enviarDados"
+                            class="inline-block rounded-xl bg-gray-700 px-7 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-gray-600 hover:px-8 hover:py-3 hover:mt-0 ease-in duration-300">
+                            Cadastrar
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="flex items-center justify-center">
-                <button type="button" @click="enviarDados"
-                    class="inline-block rounded bg-gray-600 px-8 py-3 text-white focus:outline-none focus:ring hover:bg-gray-800">
-                    Cadastrar
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { unformat } from 'v-money3';
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -108,10 +98,17 @@ let valorGasto = ref<string>('');
 let categoriaGasto = ref<string>('');
 let dataGasto = ref<string>('');
 
-async function enviarDados() {
 
-    validarDadosCadastro();
-    return
+// Definindo o tipo da função que será injetada
+type MinhaFuncaoType = (texto: string, tipo: string, tempo: number) => void;
+
+// Injetando a função fornecida pelo pai
+const mostrarMensagem = inject<MinhaFuncaoType>('mostrarMensagem', () => { });
+
+async function enviarDados() {
+    if (!validarDadosCadastro()) {
+        return;
+    }
     const dados: object = {
         nomeGasto: nomeGasto.value as string,
         origemGasto: origemGasto.value as string,
@@ -140,13 +137,46 @@ async function enviarDados() {
     }
 }
 
-function validarDadosCadastro() {
-    let camposObrigatorios = Array.from(document.querySelectorAll('input[required], select[required]'));
-    camposObrigatorios.forEach((campo) => {
-        console.log(campo)
+function validarDadosCadastro(): boolean {
+    let camposObrigatorios: Element[] = Array.from(document.querySelectorAll('input[required], select[required]'));
+
+    let camposValidados: boolean = true;
+
+    camposObrigatorios.reverse().forEach((campo) => {
+        if (campo instanceof HTMLInputElement || campo instanceof HTMLSelectElement) {
+            campo.value = campo.value.trim();
+            campo.classList.add('validado');
+            campo.classList.remove('invalido');
+
+            if (!campo.value || campo.value == 'R$ 0,00') {
+                mostrarMensagem('Preencha os campos obrigatorios!', 'error', 4000);
+                campo.classList.remove('validado');
+                campo.classList.add('invalido');
+                campo.focus();
+                camposValidados = false;
+            }
+        }
     })
+
+    return camposValidados;
 }
 
 </script>
 
-<style></style>
+<style>
+.border-padrao-campo {
+    border: 2px solid #666464;
+}
+
+.invalido {
+    border: 2px solid rgb(221, 22, 22) !important;
+}
+
+.validado {
+    border: 2px solid rgb(25, 206, 55) !important;
+}
+
+#btnCancelarCadastro {
+    min-width: 133px;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="mostrarMensagem" role="alert" class="absolute div-mensagem div-mensagem-teste rounded-xl border z-10 p-4"
+    <div v-if="props.mostrar" role="alert" class="absolute div-mensagem div-mensagem-teste rounded-xl border z-10 p-4"
         :class="corBg">
         <div class="flex">
             <span :class="corTexto">
@@ -15,7 +15,7 @@
                 <p class="mt-1 font-medium text-gray-700 ml-1">{{ props.texto }}</p>
             </div>
 
-            <button @click="mostrarMensagem = false" class="font-bold btn-fechar-mensagem text-gray-700">
+            <button @click="emit('update-value')" class="font-bold btn-fechar-mensagem text-gray-700">
                 <font-awesome-icon icon="fa-regular fa-circle-xmark" size="lg" />
             </button>
         </div>
@@ -23,7 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+
+import { onUpdated, ref } from 'vue';
 
 interface Props {
     mostrar: boolean,
@@ -34,23 +35,20 @@ interface Props {
 
 const props = defineProps<Props>();
 
-let mostrarMensagem = ref<boolean>(props.mostrar);
 let corTexto = ref<string>();
 let corBg = ref<string>();
+const emit = defineEmits(['update-value']);
 
-watch(
-    () => props.mostrar,
-    () => {
-        mostrarMensagem.value = props.mostrar;
-        corTexto = ref<string>(props.tipo == 'success' ? 'text-green-600' : props.tipo == 'warning' ? 'text-yellow-500' : 'text-red-600');
-        corBg = ref<string>(props.tipo == 'success' ? 'bg-green-100' : props.tipo == 'warning' ? 'bg-yellow-100' : 'bg-red-100');
+onUpdated(() => {
+    if (props.mostrar) {
+        corTexto.value = props.tipo == 'success' ? 'text-green-600' : props.tipo == 'warning' ? 'text-yellow-500' : 'text-red-600';
+        corBg.value = props.tipo == 'success' ? 'bg-green-100' : props.tipo == 'warning' ? 'bg-yellow-100' : 'bg-red-100';
 
         setTimeout(() => {
-            mostrarMensagem.value = false;
-        }, props.tempo);
+            emit('update-value');
+        }, props.tempo)
     }
-);
-
+});
 
 </script>
 
@@ -58,7 +56,7 @@ watch(
 .div-mensagem {
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 400px;
+    min-width: 450px;
     animation-name: descendo;
     animation-timing-function: ease-out;
     animation-duration: 2s;

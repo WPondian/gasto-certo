@@ -25,14 +25,12 @@ function mostrarMensagem(texto: string = '', tipo: string = '', tempo: number = 
     dadosMensagem.value.tipo = tipo;
     dadosMensagem.value.tempo = tempo;
     dadosMensagem.value.mostrar = true;
-
-    console.log(`test`)
 }
 
-// Definindo o tipo da função
+function handleUpdate() {
+    dadosMensagem.value.mostrar = false;
+};
 
-
-// Usando `provide` para fornecer a função para os filhos
 provide<MinhaFuncaoType>('mostrarMensagem', mostrarMensagem);
 
 provide('mostrarMensagem', mostrarMensagem);
@@ -41,14 +39,22 @@ provide('mostrarMensagem', mostrarMensagem);
 
 <template>
     <Mensagem :mostrar="dadosMensagem.mostrar" :texto="dadosMensagem.texto" :tempo="dadosMensagem.tempo"
-        :tipo="dadosMensagem.tipo">
+        :tipo="dadosMensagem.tipo" @update-value="handleUpdate">
     </Mensagem>
     <div class="flex">
+        <!-- <div class="bg-green-400 h-80 w-48"></div>
+        <div class="bg-blue-400 h-80 w-48"></div> -->
         <Menu></Menu>
-        <div class="h-screen flex-1 flex-col justify-between border-e bg-white">
-            <router-view></router-view>
-        </div>
+        <router-view></router-view>
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.invalido {
+    border: 1px solid rgb(221, 22, 22) !important;
+}
+
+.validado {
+    border: 1px solid rgb(25, 206, 55) !important;
+}
+</style>
