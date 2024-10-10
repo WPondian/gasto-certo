@@ -61,9 +61,7 @@
                     </thead>
 
                     <tbody class="divide-y divide-gray-200">
-                        <tr v-for="dadosGasto in listaDadosTabelaGasto" :key="dadosGasto.id"
-                            @mouseenter="efeitoLinhaTabela($event, true)"
-                            @mouseleave="efeitoLinhaTabela($event, false)">
+                        <tr v-for="dadosGasto in listaDadosTabelaGasto" :key="dadosGasto.id" class="shadowNow">
                             <td class="whitespace-nowrap px-4 font-medium text-gray-900">{{ dadosGasto.nome }}
                             </td>
                             <td class="whitespace-nowrap px-4 font-medium text-gray-700">{{ dadosGasto.origem }}</td>
@@ -144,10 +142,10 @@ function formatarDataBR(stringData: string) {
 
 function efeitoLinhaTabela(event: MouseEvent, ativaDesativa: boolean): void {
     const target = event.target as HTMLElement;
-    target.classList.remove('efeito-ativado');
+    target.classList.remove('scale-125');
 
     if (ativaDesativa) {
-        target.classList.add('efeito-ativado');
+        target.classList.add('scale-125');
     }
 
 }
@@ -160,6 +158,10 @@ onMounted(async () => {
 <style>
 select:invalid {
     color: rgb(156, 156, 156);
+}
+
+tbody tr:hover.shadowNow {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 

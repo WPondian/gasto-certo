@@ -3,6 +3,7 @@ import Mensagem from './components/Mensagem.vue';
 import Menu from './components/Menu.vue'
 
 import { provide, ref } from 'vue';
+import ModalConfirmacao from './components/ModalConfirmacao.vue';
 
 interface DadosMensagem {
     texto: string;
@@ -38,6 +39,8 @@ provide('mostrarMensagem', mostrarMensagem);
 </script>
 
 <template>
+    <ModalConfirmacao>
+    </ModalConfirmacao>
     <Mensagem :mostrar="dadosMensagem.mostrar" :texto="dadosMensagem.texto" :tempo="dadosMensagem.tempo"
         :tipo="dadosMensagem.tipo" @update-value="handleUpdate">
     </Mensagem>
