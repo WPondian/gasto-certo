@@ -11,14 +11,14 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-let connection2 = await mysql.createConnection({
+let connection = await mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '@PondianMSQL',
     database: 'db_gasto_certo'
 });
 
-connection2.connect(error => {
+connection.connect(error => {
     if (error) {
         console.error('Erro ao conectar ao banco de dados:', error);
     } else {
@@ -34,7 +34,7 @@ app.post('/salvar', async (req, res) => {
         dataGasto } = req.body;
 
     const query = 'INSERT INTO gasto (nome, origem, categoria, valor, data_gasto) VALUES (?, ?, ?, ?, ?)';
-    connection2.query(query, [nomeGasto, origemGasto, categoriaGasto, valorGasto, dataGasto],
+    connection.query(query, [nomeGasto, origemGasto, categoriaGasto, valorGasto, dataGasto],
         (err, result) => {
             if (err) {
                 return res.status(500).json({ error: err });
@@ -44,14 +44,48 @@ app.post('/salvar', async (req, res) => {
 });
 
 app.get('/listar', async (req, res) => {
+    let { nomeGasto, categoriaGasto } = req.query;
 
-    const query = 'SELECT * FROM gasto';
-    connection2.query(query,
+    let query = 'SELECT * FROM gasto';
+    let params = [];
+
+    if (nomeGasto || categoriaGasto) {
+        query += ' WHERE';
+    }
+
+    if (nomeGasto) {
+        query += ' nome LIKE ?';
+        params.push(`%${nomeGasto}%`);
+    }
+
+    if (nomeGasto && categoriaGasto) {
+        query += ' OR';
+    }
+
+    if (categoriaGasto) {
+        query += ' categoria LIKE ?';
+        params.push(`%${categoriaGasto}%`);
+    }
+
+    connection.execute(query, params,
         (err, result) => {
             if (err) {
                 return res.status(500).json({ error: err });
             }
             return res.json(result);
+        });
+});
+
+app.delete('/deletar', async (req, res) => {
+    const { idGasto } = req.body;
+
+    const query = 'DELETE FROM gasto WHERE id = ?';
+    connection.query(query, idGasto,
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err });
+            }
+            return res.json({ id: result.insertId, ...req.body });
         });
 });
 

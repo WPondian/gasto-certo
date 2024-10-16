@@ -1,37 +1,28 @@
 <template>
-    <div data-dialog-backdrop="modal" data-dialog-backdrop-close="true"
-        class="inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
+    <div v-if="mostrar" data-dialog-backdrop="modal" data-dialog-backdrop-close="true"
+        class="inset-0 z-[999] fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
         <div data-dialog="modal" class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
-            <div class="flex shrink-0 items-center pb-4 text-xl font-medium text-slate-800">
-                {{ titulo }}
+            <div class="flex shrink-0 items-center justify-center pb-4 text-xl font-medium text-slate-800">
+                <h3 class="font-bold">{{ props.titulo }}</h3>
             </div>
-            <div class="relative border-t border-slate-200 py-4 leading-normal text-slate-600 font-light">
-                {{ mensagem }}
+            <div
+                class="flex relative justify-center border-t border-slate-200 py-20 leading-normal text-slate-700 font-light">
+                <p class="font-medium">{{ props.texto }}</p>
             </div>
             <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
                 <button data-dialog-close="true"
-                    class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button">
+                    class="inline-block rounded-xl mr-6 bg-red-700 px-5 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-red-600 ease-in duration-300"
+                    type="button" @click="retornarValorEscolhido(false)">
                     Cancelar
                 </button>
                 <button data-dialog-close="true"
-                    class="rounded-md bg-green-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-green-700 focus:shadow-none active:bg-green-700 hover:bg-green-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
-                    type="button">
+                    class="inline-block rounded-xl bg-gray-700 px-7 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-gray-600 ease-in duration-300"
+                    type="button" @click="retornarValorEscolhido(true)">
                     Confirmar
                 </button>
             </div>
         </div>
     </div>
-
-    <div class="text-center mt-4">
-        <button data-dialog-target="modal"
-            class="rounded-md bg-slate-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
-            type="button">
-            Open Modal
-        </button>
-    </div>
-
-    <br />
 </template>
 
 <script setup lang="ts">
@@ -41,20 +32,20 @@ import { onUpdated, ref } from 'vue';
 interface Props {
     mostrar: boolean,
     titulo: string,
-    mensagem: string,
+    texto: string,
 }
-
 const props = defineProps<Props>();
+let mostrar = ref<boolean>(false);
 
-function mostrarMensagem(texto: string = '', tipo: string = '', tempo: number = 4000,): void {
-    dadosMensagem.value.texto = texto;
-    dadosMensagem.value.tipo = tipo;
-    dadosMensagem.value.tempo = tempo;
-    dadosMensagem.value.mostrar = true;
+onUpdated(() => {
+    mostrar.value = props.mostrar;
+})
+
+function retornarValorEscolhido(valorEscolhido: boolean) {
+    emit('retorna-valor-modal', valorEscolhido);
 }
 
-
-const emit = defineEmits(['update-value']);
+const emit = defineEmits(['retorna-valor-modal']);
 
 
 </script>

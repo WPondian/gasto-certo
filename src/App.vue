@@ -5,6 +5,11 @@ import Menu from './components/Menu.vue'
 import { provide, ref } from 'vue';
 import ModalConfirmacao from './components/ModalConfirmacao.vue';
 
+// --------------------------------------------------------------------------------
+
+type FuncaoMensagemType = (texto: string, tipo: string, tempo: number) => void;
+type FuncaoModalType = (texto: string, titulo: string) => void;
+
 interface DadosMensagem {
     texto: string;
     tipo: string;
@@ -12,14 +17,29 @@ interface DadosMensagem {
     mostrar: boolean;
 }
 
-type MinhaFuncaoType = (texto: string, tipo: string, tempo: number) => void;
-
 let dadosMensagem = ref<DadosMensagem>({
     texto: '' as string,
     tipo: '' as string,
     tempo: 4000 as number,
     mostrar: false as boolean
-})
+});
+
+interface DadosModal {
+    texto: string;
+    titulo: string;
+    mostrar: boolean;
+}
+
+let dadosModal = ref<DadosModal>({
+    texto: '' as string,
+    titulo: '' as string,
+    mostrar: false as boolean
+});
+
+let valorRetornadoModal = ref<boolean>(false);
+
+
+// --------------------------------------------------------------------------------
 
 function mostrarMensagem(texto: string = '', tipo: string = '', tempo: number = 4000,): void {
     dadosMensagem.value.texto = texto;
@@ -28,21 +48,33 @@ function mostrarMensagem(texto: string = '', tipo: string = '', tempo: number = 
     dadosMensagem.value.mostrar = true;
 }
 
-function handleUpdate() {
+function abrirModal(titulo: string = '', texto: string = ''): void {
+    dadosModal.value.titulo = texto;
+    dadosModal.value.texto = titulo;
+    dadosModal.value.mostrar = true;
+}
+
+function atualizaMensagem() {
     dadosMensagem.value.mostrar = false;
 };
 
-provide<MinhaFuncaoType>('mostrarMensagem', mostrarMensagem);
+function atualizaModal(valorModal: boolean) {
+    dadosModal.value.mostrar = false;
+    valorRetornadoModal.value = valorModal;
+}
 
-provide('mostrarMensagem', mostrarMensagem);
+provide('valorModal', { valorRetornadoModal, atualizaModal });
+provide<FuncaoMensagemType>('mostrarMensagem', mostrarMensagem);
+provide<FuncaoModalType>('abrirModal', abrirModal);
 
 </script>
 
 <template>
-    <ModalConfirmacao>
+    <ModalConfirmacao @retorna-valor-modal="atualizaModal" :titulo="dadosModal.titulo" :texto="dadosModal.texto"
+        :mostrar="dadosModal.mostrar">
     </ModalConfirmacao>
     <Mensagem :mostrar="dadosMensagem.mostrar" :texto="dadosMensagem.texto" :tempo="dadosMensagem.tempo"
-        :tipo="dadosMensagem.tipo" @update-value="handleUpdate">
+        :tipo="dadosMensagem.tipo" @update-value="atualizaMensagem">
     </Mensagem>
     <div class="flex">
         <!-- <div class="bg-green-400 h-80 w-48"></div>

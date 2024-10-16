@@ -7,16 +7,17 @@
             <div class="row flex justify-between items-end mb-5">
                 <div class="grupo grid grid-cols-3 content-end items-end gap-3">
                     <div>
-                        <label for="nomeGasto" class="block font-medium text-gray-700">Nome*: </label>
+                        <label for="nomeGastoFiltro" class="block font-medium text-gray-700">Nome*: </label>
 
-                        <input type="text" v-model="nomeGasto" id="nomeGasto" placeholder="Informe a origem do gasto..."
+                        <input type="text" v-model="nomeGastoFiltro" id="nomeGastoFiltro"
+                            placeholder="Informe a origem do gasto..."
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 px-3 py-1"
                             required />
                     </div>
                     <div>
-                        <label for="categoriaGasto" class="block font-medium text-gray-700">Categoria*: </label>
-                        <select name="categoriaGasto" id="categoriaGasto" placeholder="Informe a origem do gasto..."
-                            v-model="categoriaGasto" required
+                        <label for="categoriaGastoFiltro" class="block font-medium text-gray-700">Categoria*: </label>
+                        <select name="categoriaGastoFiltro" id="categoriaGastoFiltro"
+                            placeholder="Informe a origem do gasto..." v-model="categoriaGastoFiltro" required
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 cursor-pointer font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 px-3 py-1">
                             <option class="text-gray-600 font-semibold" value="">Selecione
                                 uma
@@ -33,7 +34,7 @@
 
                     </div>
                     <div>
-                        <button type="button"
+                        <button type="button" @click="listarDadosTabelaGastos"
                             class="inline-block rounded-xl bg-gray-700 px-7 py-1.5 text-white font-medium focus:outline-none focus:ring hover:text-teal-400 hover:px-8 hover:py-2 hover:mt-0 ease-in duration-300">
                             Buscar
                         </button>
@@ -73,7 +74,7 @@
                                 <div class='has-tooltip'>
                                     <span
                                         class='tooltip rounded shadow-lg p-1 bg-gray-700 text-white text-sm font-medium -mt-8 -ml-4'>Remover</span>
-                                    <button type="button"
+                                    <button type="button" @click="abrirModalRemover(dadosGasto)"
                                         class="inline-block px-2.5 py-1 rounded-full bg-gray-700 text-white font-medium focus:outline-none focus:ring hover:bg-red-600">
                                         <font-awesome-icon icon=" fa-solid fa-trash" />
                                     </button>
@@ -97,11 +98,19 @@
 
 <script setup lang="ts">
 import { format } from 'v-money3';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, inject, watch, Ref } from 'vue';
 import { GastoInterface } from '../types/Gasto';
 
-let nomeGasto = ref<string>('');
-let categoriaGasto = ref<string>('');
+let nomeGastoFiltro = ref<string>('');
+let categoriaGastoFiltro = ref<string>('');
+let codigoGastoSelecionado = ref<number>();
+
+type FuncaoMensagemType = (texto: string, tipo: string, tempo: number) => void;
+type FuncaoModalType = (texto: string, titulo: string) => void;
+interface modalInjection {
+    valorRetornadoModal: Ref<boolean>;
+    atualizaModal: (newLocation: boolean) => void;
+}
 
 const config: object = {
     prefix: 'R$ ',
@@ -114,8 +123,25 @@ const config: object = {
 
 let listaDadosTabelaGasto = ref<GastoInterface[]>();
 
+const mostrarMensagem = inject<FuncaoMensagemType>('mostrarMensagem', () => { });
+
+const abrirModal = inject<FuncaoModalType>('abrirModal', () => { });
+
+const modalInjection = inject<modalInjection>('valorModal');
+
+if (!modalInjection) {
+    throw new Error("modal injection not provided");
+}
+
+const { valorRetornadoModal, atualizaModal } = modalInjection;
+
+async function abrirModalRemover(dadosGasto: GastoInterface) {
+    codigoGastoSelecionado.value = dadosGasto.id;
+    abrirModal(`Deseja realmente remover o gasto ${dadosGasto.nome}, de valor ${dadosGasto.valor}`, 'Remover Gasto');
+}
+
 async function listarDadosTabelaGastos() {
-    await fetch('http://localhost:3000/listar')
+    await fetch(`http://localhost:3000/listar?nomeGasto=${nomeGastoFiltro.value}&categoriaGasto=${categoriaGastoFiltro.value}`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then((result) => {
             result.forEach((element: GastoInterface) => {
@@ -125,7 +151,6 @@ async function listarDadosTabelaGastos() {
 
             listaDadosTabelaGasto.value = result;
         });
-
 }
 
 function formatarDataBR(stringData: string) {
@@ -140,19 +165,44 @@ function formatarDataBR(stringData: string) {
     return "";
 }
 
-function efeitoLinhaTabela(event: MouseEvent, ativaDesativa: boolean): void {
-    const target = event.target as HTMLElement;
-    target.classList.remove('scale-125');
+async function deletarGasto() {
 
-    if (ativaDesativa) {
-        target.classList.add('scale-125');
+    const dados: object = {
+        idGasto: codigoGastoSelecionado.value as number,
+    };
+
+    try {
+        const resposta = await fetch('http://localhost:3000/deletar', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dados)
+        });
+
+        if (resposta.ok) {
+            mostrarMensagem('Gasto removido com sucesso!', 'success', 4000);
+            atualizaModal(false);
+            await listarDadosTabelaGastos();
+        } else {
+            mostrarMensagem('Erro ao remover gasto!', 'error', 4000);
+        }
+    } catch (error) {
+        console.error('Erro ao fazer a requisição:', error);
+        mostrarMensagem('Erro ao remover gasto!', 'error', 4000);
     }
-
 }
 
 onMounted(async () => {
     await listarDadosTabelaGastos();
 })
+
+watch(valorRetornadoModal, async (novoValor) => {
+    if (novoValor) {
+        await deletarGasto();
+    }
+});
+
 </script>
 
 <style>
@@ -164,11 +214,9 @@ tbody tr:hover.shadowNow {
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
-
 .efeito-ativado {
     border: 1px solid red;
 }
-
 
 .tooltip {
     visibility: hidden;
