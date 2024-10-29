@@ -4,6 +4,7 @@ import Menu from './components/Menu.vue'
 
 import { provide, ref } from 'vue';
 import ModalConfirmacao from './components/ModalConfirmacao.vue';
+import Carregando from './components/Carregando.vue';
 
 // --------------------------------------------------------------------------------
 
@@ -39,6 +40,8 @@ let dadosModal = ref<DadosModal>({
 let valorRetornadoModal = ref<boolean>(false);
 
 
+let mostrarCarregamento = ref<boolean>(false);
+
 // --------------------------------------------------------------------------------
 
 function mostrarMensagem(texto: string = '', tipo: string = '', tempo: number = 4000,): void {
@@ -48,28 +51,40 @@ function mostrarMensagem(texto: string = '', tipo: string = '', tempo: number = 
     dadosMensagem.value.mostrar = true;
 }
 
+function atualizaMensagem() {
+    dadosMensagem.value.mostrar = false;
+};
+
 function abrirModal(titulo: string = '', texto: string = ''): void {
     dadosModal.value.titulo = texto;
     dadosModal.value.texto = titulo;
     dadosModal.value.mostrar = true;
 }
 
-function atualizaMensagem() {
-    dadosMensagem.value.mostrar = false;
-};
-
 function atualizaModal(valorModal: boolean) {
     dadosModal.value.mostrar = false;
     valorRetornadoModal.value = valorModal;
 }
 
+function abrirCarregamento() {
+    mostrarCarregamento.value = true;
+}
+
+function fecharCarregando() {
+    mostrarCarregamento.value = false;
+}
+
 provide('valorModal', { valorRetornadoModal, atualizaModal });
 provide<FuncaoMensagemType>('mostrarMensagem', mostrarMensagem);
 provide<FuncaoModalType>('abrirModal', abrirModal);
+provide('abrirCarregamento', abrirCarregamento);
+provide('fecharCarregando', fecharCarregando);
 
 </script>
 
 <template>
+    <Carregando :mostrar="mostrarCarregamento">
+    </Carregando>
     <ModalConfirmacao @retorna-valor-modal="atualizaModal" :titulo="dadosModal.titulo" :texto="dadosModal.texto"
         :mostrar="dadosModal.mostrar">
     </ModalConfirmacao>

@@ -42,7 +42,7 @@ const emit = defineEmits(['update-value']);
 onUpdated(() => {
     if (props.mostrar) {
         corTexto.value = props.tipo == 'success' ? 'text-green-600' : props.tipo == 'warning' ? 'text-yellow-500' : 'text-red-600';
-        corBg.value = props.tipo == 'success' ? 'bg-green-100' : props.tipo == 'warning' ? 'bg-yellow-100' : 'bg-red-100';
+        corBg.value = props.tipo == 'success' ? 'bg-green-50' : props.tipo == 'warning' ? 'bg-yellow-50' : 'bg-red-50';
 
         setTimeout(() => {
             emit('update-value');

@@ -10,7 +10,7 @@
                         <label for="nomeGastoFiltro" class="block font-medium text-gray-700">Nome*: </label>
 
                         <input type="text" v-model="nomeGastoFiltro" id="nomeGastoFiltro"
-                            placeholder="Informe a origem do gasto..."
+                            placeholder="Informe a origem do gasto..." autocomplete="off"
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 px-3 py-1"
                             required />
                     </div>
@@ -34,7 +34,7 @@
 
                     </div>
                     <div>
-                        <button type="button" @click="listarDadosTabelaGastos"
+                        <button type="button" @click="listarDadosTabelaGastos" v-if="listaDadosTabelaGasto?.length"
                             class="inline-block rounded-xl bg-gray-700 px-7 py-1.5 text-white font-medium focus:outline-none focus:ring hover:text-teal-400 hover:px-8 hover:py-2 hover:mt-0 ease-in duration-300">
                             Buscar
                         </button>
@@ -48,7 +48,8 @@
                     </router-link>
                 </div>
             </div>
-            <div class="overflow-x-auto rounded-t-lg rounded-lg border border-gray-200">
+            <div v-if="listaDadosTabelaGasto?.length"
+                class="overflow-x-auto rounded-t-lg rounded-lg border border-gray-200">
                 <table class="min-w-full divide-y-2 divide-gray-200 bg-white">
                     <thead class="bg-gray-700">
                         <tr>
@@ -91,6 +92,9 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div v-if="!listaDadosTabelaGasto?.length" class="row flex justify-center mt-40">
+                <h3 class="text-gray-400 font-semibold text-5xl">Nenhum Gasto Informado.</h3>
             </div>
         </div>
     </div>
@@ -141,15 +145,21 @@ async function abrirModalRemover(dadosGasto: GastoInterface) {
 }
 
 async function listarDadosTabelaGastos() {
-    await fetch(`http://localhost:3000/listar?nomeGasto=${nomeGastoFiltro.value}&categoriaGasto=${categoriaGastoFiltro.value}`)
+    await fetch(`https://api-gasto-certo.vercel.app/api/buscar-gastos?nomeGasto=${nomeGastoFiltro.value}&categoriaGasto=${categoriaGastoFiltro.value}`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
-        .then((result) => {
-            result.forEach((element: GastoInterface) => {
+        .then((retorno) => {
+
+            if (retorno.error) {
+                console.error(retorno.error);
+                return mostrarMensagem('Erro ao listar gastos!', 'error', 4000);
+            }
+
+            retorno.result.forEach((element: GastoInterface) => {
                 element.data_gasto = formatarDataBR(element.data_gasto);
                 element.valor = format(element.valor, config);
             });
 
-            listaDadosTabelaGasto.value = result;
+            listaDadosTabelaGasto.value = retorno.result;
         });
 }
 
@@ -166,31 +176,28 @@ function formatarDataBR(stringData: string) {
 }
 
 async function deletarGasto() {
-
-    const dados: object = {
-        idGasto: codigoGastoSelecionado.value as number,
+    let idGasto: Pick<GastoInterface, "id"> = {
+        id: codigoGastoSelecionado.value as number
     };
 
-    try {
-        const resposta = await fetch('http://localhost:3000/deletar', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dados)
-        });
+    await fetch(`https://api-gasto-certo.vercel.app/api/deletar-gasto/${idGasto.id}?deletar-gasto`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(async (retorno) => {
 
-        if (resposta.ok) {
+            if (retorno.error) {
+                console.error(retorno.error);
+                return mostrarMensagem('Erro ao remover gasto!', 'error', 4000);
+            }
+
             mostrarMensagem('Gasto removido com sucesso!', 'success', 4000);
             atualizaModal(false);
             await listarDadosTabelaGastos();
-        } else {
-            mostrarMensagem('Erro ao remover gasto!', 'error', 4000);
-        }
-    } catch (error) {
-        console.error('Erro ao fazer a requisição:', error);
-        mostrarMensagem('Erro ao remover gasto!', 'error', 4000);
-    }
+        });
 }
 
 onMounted(async () => {

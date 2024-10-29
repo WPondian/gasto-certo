@@ -104,11 +104,13 @@ type MinhaFuncaoType = (texto: string, tipo: string, tempo: number) => void;
 
 // Injetando a função fornecida pelo pai
 const mostrarMensagem = inject<MinhaFuncaoType>('mostrarMensagem', () => { });
+const abrirCarregamento = inject('abrirCarregamento', () => { });
 
 async function enviarDados() {
     if (!validarDadosCadastro()) {
         return;
     }
+
     const dados: object = {
         nomeGasto: nomeGasto.value as string,
         origemGasto: origemGasto.value as string,
@@ -117,24 +119,22 @@ async function enviarDados() {
         dataGasto: dataGasto.value as string,
     };
 
-    try {
-        const resposta = await fetch('http://localhost:3000/salvar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dados)
-        });
 
-        if (resposta.ok) {
+    await fetch('https://api-gasto-certo.vercel.app/api/cadastrar-gasto', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dados)
+    }).then(response => response.ok ? response.json() : Promise.reject(response))
+        .then((retorno) => {
+            if (retorno.error) {
+                console.error(retorno.error);
+                return mostrarMensagem('Erro ao cadastrar gastos!', 'error', 4000);
+            }
+
             router.push('/gastos')
-        } else {
-            alert('Erro ao enviar dados!');
-        }
-    } catch (error) {
-        console.error('Erro ao fazer a requisição:', error);
-        alert('Erro ao enviar dados!');
-    }
+        });
 }
 
 function validarDadosCadastro(): boolean {
@@ -149,7 +149,8 @@ function validarDadosCadastro(): boolean {
             campo.classList.remove('invalido');
 
             if (!campo.value || campo.value == 'R$ 0,00') {
-                mostrarMensagem('Preencha os campos obrigatorios!', 'error', 4000);
+                abrirCarregamento();
+                mostrarMensagem('Preencha os campos obrigatorios!', 'warning', 4000);
                 campo.classList.remove('validado');
                 campo.classList.add('invalido');
                 campo.focus();
@@ -157,6 +158,11 @@ function validarDadosCadastro(): boolean {
             }
         }
     })
+
+    if (camposValidados && !dataGasto.value) {
+        mostrarMensagem('Por favor, informe a data do gasto!', 'warning', 4000);
+        camposValidados = false;
+    }
 
     return camposValidados;
 }
