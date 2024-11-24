@@ -104,9 +104,12 @@ type MinhaFuncaoType = (texto: string, tipo: string, tempo: number) => void;
 
 // Injetando a função fornecida pelo pai
 const mostrarMensagem = inject<MinhaFuncaoType>('mostrarMensagem', () => { });
-const abrirCarregamento = inject('abrirCarregamento', () => { });
+const abrirCarregando = inject('abrirCarregando', () => { });
+const fecharCarregando = inject('fecharCarregando', () => { });
 
 async function enviarDados() {
+    abrirCarregando();
+
     if (!validarDadosCadastro()) {
         return;
     }
@@ -133,7 +136,11 @@ async function enviarDados() {
                 return mostrarMensagem('Erro ao cadastrar gastos!', 'error', 4000);
             }
 
-            router.push('/gastos')
+            setTimeout(() => {
+                fecharCarregando();
+                router.push('/gastos')
+
+            }, 4000);
         });
 }
 
@@ -149,7 +156,6 @@ function validarDadosCadastro(): boolean {
             campo.classList.remove('invalido');
 
             if (!campo.value || campo.value == 'R$ 0,00') {
-                abrirCarregamento();
                 mostrarMensagem('Preencha os campos obrigatorios!', 'warning', 4000);
                 campo.classList.remove('validado');
                 campo.classList.add('invalido');

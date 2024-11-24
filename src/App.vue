@@ -66,7 +66,7 @@ function atualizaModal(valorModal: boolean) {
     valorRetornadoModal.value = valorModal;
 }
 
-function abrirCarregamento() {
+function abrirCarregando() {
     mostrarCarregamento.value = true;
 }
 
@@ -77,7 +77,7 @@ function fecharCarregando() {
 provide('valorModal', { valorRetornadoModal, atualizaModal });
 provide<FuncaoMensagemType>('mostrarMensagem', mostrarMensagem);
 provide<FuncaoModalType>('abrirModal', abrirModal);
-provide('abrirCarregamento', abrirCarregamento);
+provide('abrirCarregando', abrirCarregando);
 provide('fecharCarregando', fecharCarregando);
 
 </script>
