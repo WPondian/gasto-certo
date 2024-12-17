@@ -11,14 +11,14 @@
                 </div>
 
                 <form id="cadastroGasto" autocomplete="off" class="mx-auto mb-0 mt-2 max-w-md space-y-4">
-                    <div class="py-1">
+                    <div class="py-1 px-5">
                         <label for="nomeGasto" class="block font-medium text-gray-700"> Nome*: </label>
 
                         <input type="text" v-model="nomeGasto" id="nomeGasto" placeholder="Informe o nome do gasto..."
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
                             required />
                     </div>
-                    <div class="py-1">
+                    <div class="py-1 px-5">
                         <label for="categoriaGasto" class="block font-medium text-gray-700"> Categoria*: </label>
                         <select name="categoriaGasto" id="categoriaGasto" v-model="categoriaGasto" required
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 cursor-pointer font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2">
@@ -36,7 +36,7 @@
                         </select>
 
                     </div>
-                    <div class="py-1">
+                    <div class="py-1 px-5">
                         <label for="origemGasto" class="block font-medium text-gray-700"> Origem*: </label>
 
                         <input type="text" v-model="origemGasto" id="origemGasto"
@@ -44,14 +44,14 @@
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
                             required />
                     </div>
-                    <div class="py-1">
+                    <div class="py-1 px-5">
                         <label for="valorGasto" class="block font-medium text-gray-700"> Valor*: </label>
                         <input type="text" v-model="valorGasto" v-money3="config" id="valorGasto" maxlength="10"
                             placeholder="Informe a origem do gasto..."
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
                             required />
                     </div>
-                    <div class="py-1">
+                    <div class="py-1 px-5">
                         <div class="relative">
                             <label for="dataGasto" class="block font-medium text-gray-700"> Data*: </label>
                             <VueDatePicker id="dataGasto"
@@ -138,7 +138,7 @@ async function enviarDados() {
 
             setTimeout(() => {
                 fecharCarregando();
-                router.push('/gastos')
+                router.push('/gastos');
 
             }, 4000);
         });
