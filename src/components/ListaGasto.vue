@@ -77,13 +77,12 @@
                                         class='tooltip rounded shadow-lg p-1 bg-gray-700 text-white text-sm font-medium -mt-8 -ml-4'>Remover</span>
                                     <button type="button" @click="abrirModalRemover(dadosGasto)"
                                         class="inline-block px-2.5 py-1 rounded-full bg-gray-700 text-white font-medium focus:outline-none focus:ring hover:bg-red-600">
-                                        <font-awesome-icon icon=" fa-solid fa-trash" />
                                     </button>
                                 </div>
                                 <div class='has-tooltip'>
                                     <span
                                         class='tooltip rounded shadow-lg p-1 bg-gray-700 text-white text-sm font-medium -mt-8 ml-2'>Editar</span>
-                                    <button type="button"
+                                    <button type="button" @click="abrirModalEdicao(dadosGasto)"
                                         class="inline-block px-2 py-1 ml-4 rounded-full bg-gray-700 text-white font-medium focus:outline-none focus:ring hover:bg-teal-500">
                                         <font-awesome-icon icon="fa-regular fa-pen-to-square" />
                                     </button>
@@ -98,9 +97,12 @@
             </div>
         </div>
     </div>
+    <ModalEdicao :mostrar="true"></ModalEdicao>
 </template>
 
 <script setup lang="ts">
+import ModalEdicao from '../components/ModalEdicao.vue';
+
 import { format } from 'v-money3';
 import { onMounted, ref, inject, watch, Ref } from 'vue';
 import { GastoInterface } from '../types/Gasto';
@@ -111,6 +113,7 @@ let codigoGastoSelecionado = ref<number>();
 
 type FuncaoMensagemType = (texto: string, tipo: string, tempo: number) => void;
 type FuncaoModalType = (texto: string, titulo: string) => void;
+
 interface modalInjection {
     valorRetornadoModal: Ref<boolean>;
     atualizaModal: (newLocation: boolean) => void;
