@@ -1,5 +1,5 @@
 <template>
-    <div v-if="mostrar" data-dialog-backdrop="modal" data-dialog-backdrop-close="true"
+    <div v-if="codigoGasto" data-dialog-backdrop="modal" data-dialog-backdrop-close="true"
         class="inset-0 z-[999] fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
         <div data-dialog="modal" class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
             <div class="flex shrink-0 items-center justify-center pb-4 text-3xl font-medium text-slate-800">
@@ -82,7 +82,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 interface Props {
-    mostrar: boolean,
+    codigoGasto: number,
 }
 
 const config: object = {
@@ -94,7 +94,7 @@ const config: object = {
 };
 
 const props = defineProps<Props>();
-let mostrar = ref<boolean>(false);
+let codigoGasto = ref<number>();
 let nomeGasto = ref<string>('');
 let origemGasto = ref<string>('');
 let valorGasto = ref<string>('');
@@ -102,7 +102,7 @@ let categoriaGasto = ref<string>('');
 let dataGasto = ref<string>('');
 
 onUpdated(() => {
-    mostrar.value = props.mostrar;
+    codigoGasto.value = props.codigoGasto;
 });
 
 type MinhaFuncaoType = (texto: string, tipo: string, tempo: number) => void;
@@ -110,6 +110,39 @@ type MinhaFuncaoType = (texto: string, tipo: string, tempo: number) => void;
 const mostrarMensagem = inject<MinhaFuncaoType>('mostrarMensagem', () => { });
 const abrirCarregando = inject('abrirCarregando', () => { });
 const fecharCarregando = inject('fecharCarregando', () => { });
+
+async function reqBuscarDadosGasto() {
+    abrirCarregando();
+
+    if (!validarDadosCadastro()) {
+        return;
+    }
+
+    const dados: object = {
+        codigoGasto: codigoGasto.value as number,
+    };
+
+
+    await fetch('https://api-gasto-certo.vercel.app/api/cadastrar-gasto', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dados)
+    }).then(response => response.ok ? response.json() : Promise.reject(response))
+        .then((retorno) => {
+            if (retorno.error) {
+                console.error(retorno.error);
+                return mostrarMensagem('Erro ao cadastrar gastos!', 'error', 4000);
+            }
+
+            setTimeout(() => {
+                fecharCarregando();
+                router.push('/gastos');
+
+            }, 4000);
+        });
+}
 
 async function enviarDados() {
     abrirCarregando();

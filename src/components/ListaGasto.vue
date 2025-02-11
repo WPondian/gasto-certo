@@ -82,7 +82,7 @@
                                 <div class='has-tooltip'>
                                     <span
                                         class='tooltip rounded shadow-lg p-1 bg-gray-700 text-white text-sm font-medium -mt-8 ml-2'>Editar</span>
-                                    <button type="button" @click="abrirModalEdicao(dadosGasto)"
+                                    <button type="button" @click="abrirModalEdicaoGasto(dadosGasto)"
                                         class="inline-block px-2 py-1 ml-4 rounded-full bg-gray-700 text-white font-medium focus:outline-none focus:ring hover:bg-teal-500">
                                         <font-awesome-icon icon="fa-regular fa-pen-to-square" />
                                     </button>
@@ -97,7 +97,7 @@
             </div>
         </div>
     </div>
-    <ModalEdicao :mostrar="true"></ModalEdicao>
+    <ModalEdicao :codigoGasto="0"></ModalEdicao>
 </template>
 
 <script setup lang="ts">
@@ -113,6 +113,7 @@ let codigoGastoSelecionado = ref<number>();
 
 type FuncaoMensagemType = (texto: string, tipo: string, tempo: number) => void;
 type FuncaoModalType = (texto: string, titulo: string) => void;
+type FuncaoModalEdicao = (codigoGasto: number) => void;
 
 interface modalInjection {
     valorRetornadoModal: Ref<boolean>;
@@ -134,6 +135,8 @@ const mostrarMensagem = inject<FuncaoMensagemType>('mostrarMensagem', () => { })
 
 const abrirModal = inject<FuncaoModalType>('abrirModal', () => { });
 
+const abrirModalEdicao = inject<FuncaoModalEdicao>('abrirModalEdicao', () => { });
+
 const modalInjection = inject<modalInjection>('valorModal');
 
 if (!modalInjection) {
@@ -145,6 +148,11 @@ const { valorRetornadoModal, atualizaModal } = modalInjection;
 async function abrirModalRemover(dadosGasto: GastoInterface) {
     codigoGastoSelecionado.value = dadosGasto.id;
     abrirModal(`Deseja realmente remover o gasto ${dadosGasto.nome}, de valor ${dadosGasto.valor}`, 'Remover Gasto');
+}
+
+async function abrirModalEdicaoGasto(dadosGasto: GastoInterface) {
+    codigoGastoSelecionado.value = dadosGasto.id;
+    abrirModalEdicao(codigoGastoSelecionado.value);
 }
 
 async function listarDadosTabelaGastos() {
