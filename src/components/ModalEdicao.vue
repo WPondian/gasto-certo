@@ -3,21 +3,21 @@
         class="inset-0 z-[999] fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
         <div data-dialog="modal" class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
             <div class="flex shrink-0 items-center justify-center pb-4 text-3xl font-medium text-slate-800">
-            <h3>Edicao de gasto</h3>
+            <h3>Edição de gasto</h3>
         </div>
             <div class="flex shrink-0 items-center justify-center pb-4 text-xl font-medium text-slate-800">
-                <form id="cadastroGasto" autocomplete="off" class="mx-auto mb-0 mt-2 max-w-md space-y-4">
+                <form id="cadastroGasto" autocomplete="off" class="w-2/4 mb-0 mt-2 max-w-md space-y-4">
                     <div class="py-1 px-5">
                         <label for="nomeGasto" class="block font-medium text-gray-700"> Nome*: </label>
 
-                        <input type="text" v-model="nomeGasto" id="nomeGasto" placeholder="Informe o nome do gasto..."
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
+                        <input type="text" v-model="gasto.nome" id="nomeGasto" placeholder="Informe o nome do gasto..."
+                            class="mt-1 w-full rounded-lg border-padrao-campo text-base font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
                             required />
                     </div>
                     <div class="py-1 px-5">
                         <label for="categoriaGasto" class="block font-medium text-gray-700"> Categoria*: </label>
-                        <select name="categoriaGasto" id="categoriaGasto" v-model="categoriaGasto" required
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 cursor-pointer font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2">
+                        <select name="categoriaGasto" id="categoriaGasto" v-model="gasto.categoria" required
+                            class="mt-1 w-full text-base rounded-lg border-padrao-campo cursor-pointer font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2">
                             <option class="text-gray-600 font-semibold bg-gray-200" value="" disabled selected>Selecione
                                 uma
                                 opção...
@@ -35,33 +35,33 @@
                     <div class="py-1 px-5">
                         <label for="origemGasto" class="block font-medium text-gray-700"> Origem*: </label>
 
-                        <input type="text" v-model="origemGasto" id="origemGasto"
+                        <input type="text" v-model="gasto.origem" id="origemGasto"
                             placeholder="Informe a origem do gasto..."
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
+                            class="mt-1 w-full text-base rounded-lg border-padrao-campo font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
                             required />
                     </div>
                     <div class="py-1 px-5">
                         <label for="valorGasto" class="block font-medium text-gray-700"> Valor*: </label>
-                        <input type="text" v-model="valorGasto" v-money3="config" id="valorGasto" maxlength="10"
+                        <input type="text" v-model="gasto.valor" v-money3="config" id="valorGasto" maxlength="10"
                             placeholder="Informe a origem do gasto..."
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
+                            class="mt-1 w-full text-base rounded-lg border-padrao-campo font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
                             required />
                     </div>
                     <div class="py-1 px-5">
                         <div class="relative">
                             <label for="dataGasto" class="block font-medium text-gray-700"> Data*: </label>
-                            <VueDatePicker id="dataGasto"
-                                class="mt-1 rounded-md border-padrao-campo text-gray-600 font-semibold"
-                                :enable-time-picker="false" placeholder="Data" v-model="dataGasto">
+                            <VueDatePicker id="dataGasto" :format="format"
+                                class="mt-1 text-base rounded-md border-padrao-campo font-semibold"
+                                :enable-time-picker="false" placeholder="Data" v-model="gasto.data_gasto">
                             </VueDatePicker>
                         </div>
                     </div>
                     <div class="flex pt-6 items-center justify-center">
-                        <router-link to="/gastos" id="btnCancelarCadastro"
+                        <button type="button" @click="fechaModalEdicao"
                             class="inline-block rounded-xl mr-6 bg-red-700 px-5 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-red-600  hover:px-7 hover:py-3 hover:mt-0 ease-in duration-300">
                             <font-awesome-icon icon="fa-solid fa-left-long" />
                             Cancelar
-                        </router-link>
+                        </button>
                         <button type="button" @click="enviarDados"
                             class="inline-block rounded-xl bg-gray-700 px-7 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-gray-600 hover:px-8 hover:py-3 hover:mt-0 ease-in duration-300">
                             Cadastrar
@@ -77,7 +77,7 @@
 import { unformat } from 'v-money3';
 import { onUpdated,inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import { GastoInterface } from '../types/Gasto';
 
 const router = useRouter();
 
@@ -95,14 +95,29 @@ const config: object = {
 
 const props = defineProps<Props>();
 let codigoGasto = ref<number>();
-let nomeGasto = ref<string>('');
-let origemGasto = ref<string>('');
-let valorGasto = ref<string>('');
-let categoriaGasto = ref<string>('');
-let dataGasto = ref<string>('');
+
+let gasto = ref<GastoInterface>({
+    id: 0,
+    nome: '',
+    valor: '',
+    origem: '',
+    data_gasto: '',
+    categoria: ''
+});
+
+const format = (date:Date):string =>  {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  return `${day}/${month < 10 ? '0' + month : month}/${year}`;
+}
 
 onUpdated(() => {
-    codigoGasto.value = props.codigoGasto;
+    if(codigoGasto.value != props.codigoGasto){
+        codigoGasto.value = props.codigoGasto;
+        props.codigoGasto != 0 && reqBuscarDadosGasto();
+    }
 });
 
 type MinhaFuncaoType = (texto: string, tipo: string, tempo: number) => void;
@@ -112,37 +127,26 @@ const abrirCarregando = inject('abrirCarregando', () => { });
 const fecharCarregando = inject('fecharCarregando', () => { });
 
 async function reqBuscarDadosGasto() {
-    abrirCarregando();
-
-    if (!validarDadosCadastro()) {
-        return;
-    }
-
-    const dados: object = {
-        codigoGasto: codigoGasto.value as number,
-    };
-
-
-    await fetch('https://api-gasto-certo.vercel.app/api/cadastrar-gasto', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dados)
-    }).then(response => response.ok ? response.json() : Promise.reject(response))
+    await fetch(`https://api-gasto-certo.vercel.app/api/buscar-gastos?codigo=${codigoGasto.value}`)
+        .then(response => response.ok ? response.json() : Promise.reject(response))
         .then((retorno) => {
+
             if (retorno.error) {
                 console.error(retorno.error);
-                return mostrarMensagem('Erro ao cadastrar gastos!', 'error', 4000);
+                return mostrarMensagem('Erro ao listar gastos!', 'error', 4000);
             }
 
-            setTimeout(() => {
-                fecharCarregando();
-                router.push('/gastos');
-
-            }, 4000);
+            retorno.result.forEach((element: GastoInterface) => {
+                gasto.value.id = element.id;
+                gasto.value.nome = element.nome;
+                gasto.value.categoria = element.categoria;
+                gasto.value.origem = element.origem;
+                gasto.value.valor = element.valor;   
+                gasto.value.data_gasto = element.data_gasto;
+            });
         });
 }
+
 
 async function enviarDados() {
     abrirCarregando();
@@ -210,11 +214,11 @@ function validarDadosCadastro(): boolean {
     return camposValidados;
 }
 
-function retornarValorEscolhido(valorEscolhido: boolean) {
-    emit('retorna-valor-modal', valorEscolhido);
+function fechaModalEdicao() {
+    emit('fechar-modal-edicao');
 }
 
-const emit = defineEmits(['retorna-valor-modal']);
+const emit = defineEmits(['fechar-modal-edicao']);
 
 </script>
 

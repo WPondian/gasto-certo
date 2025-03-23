@@ -97,7 +97,7 @@
             </div>
         </div>
     </div>
-    <ModalEdicao :codigoGasto="0"></ModalEdicao>
+    <ModalEdicao @fechar-modal-edicao="fecharModalEdicao" :codigoGasto="codigoGastoSelecionado"></ModalEdicao>
 </template>
 
 <script setup lang="ts">
@@ -109,11 +109,15 @@ import { GastoInterface } from '../types/Gasto';
 
 let nomeGastoFiltro = ref<string>('');
 let categoriaGastoFiltro = ref<string>('');
-let codigoGastoSelecionado = ref<number>();
+let codigoGastoSelecionado = ref<number>(0);
+let modalVisivel = ref<boolean>(false);
+
+const fecharModalEdicao = () => {
+    codigoGastoSelecionado.value = 0;
+};
 
 type FuncaoMensagemType = (texto: string, tipo: string, tempo: number) => void;
 type FuncaoModalType = (texto: string, titulo: string) => void;
-type FuncaoModalEdicao = (codigoGasto: number) => void;
 
 interface modalInjection {
     valorRetornadoModal: Ref<boolean>;
@@ -135,8 +139,6 @@ const mostrarMensagem = inject<FuncaoMensagemType>('mostrarMensagem', () => { })
 
 const abrirModal = inject<FuncaoModalType>('abrirModal', () => { });
 
-const abrirModalEdicao = inject<FuncaoModalEdicao>('abrirModalEdicao', () => { });
-
 const modalInjection = inject<modalInjection>('valorModal');
 
 if (!modalInjection) {
@@ -151,8 +153,8 @@ async function abrirModalRemover(dadosGasto: GastoInterface) {
 }
 
 async function abrirModalEdicaoGasto(dadosGasto: GastoInterface) {
+    modalVisivel.value = true;
     codigoGastoSelecionado.value = dadosGasto.id;
-    abrirModalEdicao(codigoGastoSelecionado.value);
 }
 
 async function listarDadosTabelaGastos() {

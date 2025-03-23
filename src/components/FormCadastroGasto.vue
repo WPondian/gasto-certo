@@ -54,7 +54,7 @@
                     <div class="py-1 px-5">
                         <div class="relative">
                             <label for="dataGasto" class="block font-medium text-gray-700"> Data*: </label>
-                            <VueDatePicker id="dataGasto"
+                            <VueDatePicker id="dataGasto" :format="format"
                                 class="mt-1 rounded-md border-padrao-campo text-gray-600 font-semibold"
                                 :enable-time-picker="false" placeholder="Data" v-model="dataGasto">
                             </VueDatePicker>
@@ -84,6 +84,12 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+let nomeGasto = ref<string>('');
+let origemGasto = ref<string>('');
+let valorGasto = ref<string>('');
+let categoriaGasto = ref<string>('');
+let dataGasto = ref<Date>(new Date);
+
 const config: object = {
     prefix: 'R$ ',
     thousands: '.',
@@ -92,11 +98,13 @@ const config: object = {
     disableNegative: true,
 };
 
-let nomeGasto = ref<string>('');
-let origemGasto = ref<string>('');
-let valorGasto = ref<string>('');
-let categoriaGasto = ref<string>('');
-let dataGasto = ref<string>('');
+const format = (date:Date) => {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  return `${day}/${month < 10 ? '0' + month : month}/${year}`;
+}
 
 
 // Definindo o tipo da função que será injetada
@@ -119,7 +127,7 @@ async function enviarDados() {
         origemGasto: origemGasto.value as string,
         categoriaGasto: categoriaGasto.value as string,
         valorGasto: unformat(valorGasto.value, config) as string,
-        dataGasto: dataGasto.value as string,
+        dataGasto: dataGasto.value.toDateString(),
     };
 
 
