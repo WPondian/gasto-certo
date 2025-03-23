@@ -47,7 +47,6 @@ function retornarValorEscolhido(valorEscolhido: boolean) {
 
 const emit = defineEmits(['retorna-valor-modal']);
 
-
 </script>
 
 <style></style>

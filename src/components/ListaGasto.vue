@@ -97,7 +97,7 @@
             </div>
         </div>
     </div>
-    <ModalEdicao @fechar-modal-edicao="fecharModalEdicao" :codigoGasto="codigoGastoSelecionado"></ModalEdicao>
+    <ModalEdicao @fechar-modal-edicao="fecharModalEdicao" :codigoGasto="codigoEdicaoGasto"></ModalEdicao>
 </template>
 
 <script setup lang="ts">
@@ -109,11 +109,11 @@ import { GastoInterface } from '../types/Gasto';
 
 let nomeGastoFiltro = ref<string>('');
 let categoriaGastoFiltro = ref<string>('');
-let codigoGastoSelecionado = ref<number>(0);
-let modalVisivel = ref<boolean>(false);
+let codigoRemoverGasto = ref<number>(0);
+let codigoEdicaoGasto = ref<number>(0);
 
 const fecharModalEdicao = () => {
-    codigoGastoSelecionado.value = 0;
+    codigoEdicaoGasto.value = 0;
 };
 
 type FuncaoMensagemType = (texto: string, tipo: string, tempo: number) => void;
@@ -148,13 +148,12 @@ if (!modalInjection) {
 const { valorRetornadoModal, atualizaModal } = modalInjection;
 
 async function abrirModalRemover(dadosGasto: GastoInterface) {
-    codigoGastoSelecionado.value = dadosGasto.id;
+    codigoRemoverGasto.value = dadosGasto.id;
     abrirModal(`Deseja realmente remover o gasto ${dadosGasto.nome}, de valor ${dadosGasto.valor}`, 'Remover Gasto');
 }
 
 async function abrirModalEdicaoGasto(dadosGasto: GastoInterface) {
-    modalVisivel.value = true;
-    codigoGastoSelecionado.value = dadosGasto.id;
+    codigoEdicaoGasto.value = dadosGasto.id;
 }
 
 async function listarDadosTabelaGastos() {
@@ -190,7 +189,7 @@ function formatarDataBR(stringData: string) {
 
 async function deletarGasto() {
     let idGasto: Pick<GastoInterface, "id"> = {
-        id: codigoGastoSelecionado.value as number
+        id: codigoRemoverGasto.value as number
     };
 
     await fetch(`https://api-gasto-certo.vercel.app/api/deletar-gasto/${idGasto.id}?deletar-gasto`, {
