@@ -1,12 +1,12 @@
 <template>
     <div v-if="codigoGasto" data-dialog-backdrop="modal" data-dialog-backdrop-close="true"
-        class="inset-0 z-[999] fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
+        class="inset-0 z-10 fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
         <div data-dialog="modal" class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
             <div class="flex shrink-0 items-center justify-center pb-4 text-3xl font-medium text-slate-800">
             <h3>Edição de gasto</h3>
         </div>
             <div class="flex shrink-0 items-center justify-center pb-4 text-xl font-medium text-slate-800">
-                <form id="cadastroGasto" autocomplete="off" class="w-2/4 mb-0 mt-2 max-w-md space-y-4">
+                <form id="editarGasto" autocomplete="off" class="w-2/4 mb-0 mt-2 max-w-md space-y-4">
                     <div class="py-1 px-5">
                         <label for="nomeGasto" class="block font-medium text-gray-700"> Nome*: </label>
 
@@ -50,7 +50,7 @@
                     <div class="py-1 px-5">
                         <div class="relative">
                             <label for="dataGasto" class="block font-medium text-gray-700"> Data*: </label>
-                            <VueDatePicker id="dataGasto" :format="format"
+                            <VueDatePicker id="dataGasto" :format="formataData"
                                 class="mt-1 text-base rounded-md border-padrao-campo font-semibold"
                                 :enable-time-picker="false" placeholder="Data" v-model="gasto.data_gasto">
                             </VueDatePicker>
@@ -62,7 +62,7 @@
                             <font-awesome-icon icon="fa-solid fa-left-long" />
                             Cancelar
                         </button>
-                        <button type="button" @click="enviarDados"
+                        <button type="button" @click="editarGasto"
                             class="inline-block rounded-xl bg-gray-700 px-7 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-gray-600 hover:px-8 hover:py-3 hover:mt-0 ease-in duration-300">
                             Cadastrar
                         </button>
@@ -74,12 +74,9 @@
 </template>
 
 <script setup lang="ts">
-import { unformat } from 'v-money3';
-import { onUpdated,inject, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { unformat,format } from 'v-money3';
+import { onUpdated, inject, ref } from 'vue';
 import { GastoInterface } from '../types/Gasto';
-
-const router = useRouter();
 
 interface Props {
     codigoGasto: number,
@@ -105,7 +102,7 @@ let gasto = ref<GastoInterface>({
     categoria: ''
 });
 
-const format = (date:Date):string =>  {
+const formataData = (date:Date):string =>  {
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
@@ -141,30 +138,32 @@ async function reqBuscarDadosGasto() {
                 gasto.value.nome = element.nome;
                 gasto.value.categoria = element.categoria;
                 gasto.value.origem = element.origem;
-                gasto.value.valor = element.valor;   
+                gasto.value.valor = format(element.valor);   
                 gasto.value.data_gasto = element.data_gasto;
             });
         });
 }
 
 
-async function enviarDados() {
-    abrirCarregando();
-
+async function editarGasto() {
+    
     if (!validarDadosCadastro()) {
         return;
     }
+    
+    abrirCarregando();
 
     const dados: object = {
-        nomeGasto: nomeGasto.value as string,
-        origemGasto: origemGasto.value as string,
-        categoriaGasto: categoriaGasto.value as string,
-        valorGasto: unformat(valorGasto.value, config) as string,
-        dataGasto: dataGasto.value as string,
+        nomeGasto: gasto.value.nome as string,
+        origemGasto: gasto.value.origem as string,
+        categoriaGasto: gasto.value.categoria as string,
+        valorGasto: unformat(gasto.value.valor, config) as string,
+        dataGasto: gasto.value.data_gasto as string,
+        idGasto:gasto.value.id,
     };
 
 
-    await fetch('https://api-gasto-certo.vercel.app/api/cadastrar-gasto', {
+    await fetch('https://api-gasto-certo.vercel.app/api/alterar-gasto', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -174,25 +173,26 @@ async function enviarDados() {
         .then((retorno) => {
             if (retorno.error) {
                 console.error(retorno.error);
-                return mostrarMensagem('Erro ao cadastrar gastos!', 'error', 4000);
+                return mostrarMensagem('Erro ao alterar gasto!', 'error', 4000);
             }
 
             setTimeout(() => {
                 fecharCarregando();
-                router.push('/gastos');
-
+                fechaModalEdicao();
+                emit('atualizar-lista-gastos');
             }, 4000);
         });
 }
 
 function validarDadosCadastro(): boolean {
-    let camposObrigatorios: Element[] = Array.from(document.querySelectorAll('input[required], select[required]'));
+    let camposObrigatorios: Element[] = Array.from(document.querySelectorAll('#editarGasto input[required], #editarGasto select[required]'));
 
     let camposValidados: boolean = true;
 
     camposObrigatorios.reverse().forEach((campo) => {
         if (campo instanceof HTMLInputElement || campo instanceof HTMLSelectElement) {
             campo.value = campo.value.trim();
+            console.log(campo.value, campo)
             campo.classList.add('validado');
             campo.classList.remove('invalido');
 
@@ -206,7 +206,7 @@ function validarDadosCadastro(): boolean {
         }
     })
 
-    if (camposValidados && !dataGasto.value) {
+    if (camposValidados && !gasto.value.data_gasto) {
         mostrarMensagem('Por favor, informe a data do gasto!', 'warning', 4000);
         camposValidados = false;
     }
@@ -218,7 +218,7 @@ function fechaModalEdicao() {
     emit('fechar-modal-edicao');
 }
 
-const emit = defineEmits(['fechar-modal-edicao']);
+const emit = defineEmits(['fechar-modal-edicao','atualizar-lista-gastos']);
 
 </script>
 

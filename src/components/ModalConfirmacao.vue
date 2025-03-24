@@ -1,6 +1,6 @@
 <template>
     <div v-if="mostrar" data-dialog-backdrop="modal" data-dialog-backdrop-close="true"
-        class="inset-0 z-[999] fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
+        class="inset-0 z-10 fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
         <div data-dialog="modal" class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
             <div class="flex shrink-0 items-center justify-center pb-4 text-xl font-medium text-slate-800">
                 <h3 class="font-bold">{{ props.titulo }}</h3>

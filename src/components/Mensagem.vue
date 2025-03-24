@@ -1,5 +1,5 @@
 <template>
-    <div v-if="props.mostrar" role="alert" class="absolute div-mensagem div-mensagem-teste rounded-xl border z-10 p-4"
+    <div v-if="props.mostrar" role="alert" class="absolute div-mensagem div-mensagem-teste rounded-xl border z-[999] p-4"
         :class="corBg">
         <div class="flex">
             <span :class="corTexto">

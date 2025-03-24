@@ -1,6 +1,6 @@
 <template>
     <div v-if="mostrar" data-dialog-backdrop="modal" data-dialog-backdrop-close="true"
-        class="inset-0 z-[999] fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity">
+        class="inset-0 z-20 fixed grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity">
         <div class="w-full">
             <div id="box" class="absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4">
                 <div class="box-circle">

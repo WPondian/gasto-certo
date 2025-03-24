@@ -97,7 +97,7 @@
             </div>
         </div>
     </div>
-    <ModalEdicao @fechar-modal-edicao="fecharModalEdicao" :codigoGasto="codigoEdicaoGasto"></ModalEdicao>
+    <ModalEdicao @fechar-modal-edicao="fecharModalEdicao" @atualizar-lista-gastos="listarDadosTabelaGastos" :codigoGasto="codigoEdicaoGasto"></ModalEdicao>
 </template>
 
 <script setup lang="ts">
@@ -115,6 +115,7 @@ let codigoEdicaoGasto = ref<number>(0);
 const fecharModalEdicao = () => {
     codigoEdicaoGasto.value = 0;
 };
+
 
 type FuncaoMensagemType = (texto: string, tipo: string, tempo: number) => void;
 type FuncaoModalType = (texto: string, titulo: string) => void;
