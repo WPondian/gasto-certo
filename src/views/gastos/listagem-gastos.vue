@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import ListaGasto from '../../components/ListaGasto.vue';
+import ListaGasto from '../../components/gasto/ListaGasto.vue';
 </script>
 
 <style></style>

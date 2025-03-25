@@ -2,7 +2,7 @@
     <div class="grid grid-cols-12 w-full">
         <div class="col-span-10 col-start-2 ">
             <div class="row flex justify-center my-20">
-                <h1 class="text-2xl font-bold sm:text-3xl uppercase">Listagem de Gastos</h1>
+                <h1 class="text-2xl font-bold sm:text-3xl uppercase">Listagem de Ganhos</h1>
             </div>
             <div class="row flex justify-between items-end mb-5">
                 <div class="grupo grid grid-cols-3 content-end items-end gap-3">
@@ -101,11 +101,11 @@
 </template>
 
 <script setup lang="ts">
-import ModalEdicao from '../components/ModalEdicao.vue';
+import ModalEdicao from '../gasto/ModalEdicaoGasto.vue';
 
 import { format } from 'v-money3';
 import { onMounted, ref, inject, watch, Ref } from 'vue';
-import { GastoInterface } from '../types/Gasto';
+import { GastoInterface } from '../../types/Gasto';
 
 let nomeGastoFiltro = ref<string>('');
 let categoriaGastoFiltro = ref<string>('');

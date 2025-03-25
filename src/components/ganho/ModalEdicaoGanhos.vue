@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import { unformat,format } from 'v-money3';
 import { onUpdated, inject, ref } from 'vue';
-import { GastoInterface } from '../types/Gasto';
+import { GastoInterface } from '../../types/Gasto';
 
 interface Props {
     codigoGasto: number,

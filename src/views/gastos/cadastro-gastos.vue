@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import FormCadastroGasto from '../../components/FormCadastroGasto.vue';
+import FormCadastroGasto from '../../components/gasto/FormCadastroGasto.vue';
 
 </script>
 
