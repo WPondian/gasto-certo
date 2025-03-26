@@ -3,11 +3,7 @@
         <div class="col-span-4 col-start-5 content-center">
             <div class="border py-10 rounded-2xl shadow-2xl">
                 <div class="mx-auto max-w-lg text-center">
-                    <h1 class="text-2xl font-bold sm:text-3xl uppercase">Cadastro de Gasto</h1>
-
-                    <p class="mt-4 text-gray-500 font-medium">
-                        Por favor, informe dados do gasto.
-                    </p>
+                    <h1 class="text-2xl font-bold sm:text-3xl uppercase">Cadastrar Ganho</h1>
                 </div>
 
                 <form id="cadastroGasto" autocomplete="off" class="mx-auto mb-0 mt-2 max-w-md space-y-4">
@@ -17,24 +13,6 @@
                         <input type="text" v-model="nomeGasto" id="nomeGasto" placeholder="Informe o nome do gasto..."
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
                             required />
-                    </div>
-                    <div class="py-1 px-5">
-                        <label for="categoriaGasto" class="block font-medium text-gray-700"> Categoria*: </label>
-                        <select name="categoriaGasto" id="categoriaGasto" v-model="categoriaGasto" required
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 cursor-pointer font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2">
-                            <option class="text-gray-600 font-semibold bg-gray-200" value="" disabled selected>Selecione
-                                uma
-                                opção...
-                            </option>
-                            <option class="text-gray-600 font-semibold" value="Comida">Comida</option>
-                            <option class="text-gray-600 font-semibold" value="Lazer">Lazer</option>
-                            <option class="text-gray-600 font-semibold" value="Investimento">Investimento</option>
-                            <option class="text-gray-600 font-semibold" value="Custo Fixo">Custo Fixo</option>
-                            <option class="text-gray-600 font-semibold" value="Aquisição">Aquisição</option>
-                            <option class="text-gray-600 font-semibold" value="Mercado">Mercado</option>
-                            <option class="text-gray-600 font-semibold" value="Cotidiano">Cotidiano</option>
-                        </select>
-
                     </div>
                     <div class="py-1 px-5">
                         <label for="origemGasto" class="block font-medium text-gray-700"> Origem*: </label>
@@ -61,7 +39,7 @@
                         </div>
                     </div>
                     <div class="flex pt-6 items-center justify-center">
-                        <router-link to="/gastos" id="btnCancelarCadastro"
+                        <router-link to="/ganhos" id="btnCancelarCadastro"
                             class="inline-block rounded-xl mr-6 bg-red-700 px-5 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-red-600  hover:px-7 hover:py-3 hover:mt-0 ease-in duration-300">
                             <font-awesome-icon icon="fa-solid fa-left-long" />
                             Cancelar

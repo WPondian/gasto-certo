@@ -5,46 +5,11 @@
                 <h1 class="text-2xl font-bold sm:text-3xl uppercase">Listagem de Ganhos</h1>
             </div>
             <div class="row flex justify-between items-end mb-5">
-                <div class="grupo grid grid-cols-3 content-end items-end gap-3">
-                    <div>
-                        <label for="nomeGastoFiltro" class="block font-medium text-gray-700">Nome*: </label>
-
-                        <input type="text" v-model="nomeGastoFiltro" id="nomeGastoFiltro"
-                            placeholder="Informe a origem do gasto..." autocomplete="off"
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 px-3 py-1"
-                            required />
-                    </div>
-                    <div>
-                        <label for="categoriaGastoFiltro" class="block font-medium text-gray-700">Categoria*: </label>
-                        <select name="categoriaGastoFiltro" id="categoriaGastoFiltro"
-                            placeholder="Informe a origem do gasto..." v-model="categoriaGastoFiltro" required
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 cursor-pointer font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 px-3 py-1">
-                            <option class="text-gray-600 font-semibold" value="">Selecione
-                                uma
-                                opção...
-                            </option>
-                            <option class="text-gray-600 font-semibold" value="Comida">Comida</option>
-                            <option class="text-gray-600 font-semibold" value="Lazer">Lazer</option>
-                            <option class="text-gray-600 font-semibold" value="Investimento">Investimento</option>
-                            <option class="text-gray-600 font-semibold" value="Custo Fixo">Custo Fixo</option>
-                            <option class="text-gray-600 font-semibold" value="Aquisição">Aquisição</option>
-                            <option class="text-gray-600 font-semibold" value="Mercado">Mercado</option>
-                            <option class="text-gray-600 font-semibold" value="Cotidiano">Cotidiano</option>
-                        </select>
-
-                    </div>
-                    <div>
-                        <button type="button" @click="listarDadosTabelaGastos" v-if="listaDadosTabelaGasto?.length"
-                            class="inline-block rounded-xl bg-gray-700 px-7 py-1.5 text-white font-medium focus:outline-none focus:ring hover:text-teal-400 hover:px-8 hover:py-2 hover:mt-0 ease-in duration-300">
-                            Buscar
-                        </button>
-                    </div>
-                </div>
                 <div class="grupo">
                     <router-link to="/gastos-cadastro"
                         class="inline-block rounded-xl bg-gray-700 px-7 py-1.5 text-white font-bold focus:outline-none focus:ring hover:text-teal-400 hover:px-8 hover:py-2 ease-in duration-300"
                         href="#">
-                        <font-awesome-icon icon="fa-solid fa-plus" /> Informar Gasto
+                        <font-awesome-icon icon="fa-solid fa-plus" /> Adicionar Ganho
                     </router-link>
                 </div>
             </div>
@@ -55,7 +20,6 @@
                         <tr>
                             <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Nome</th>
                             <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Origem</th>
-                            <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Categoria</th>
                             <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Data</th>
                             <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Valor</th>
                             <th class="whitespace-nowrap text-center px-4 py-2 font-medium text-white">Ações</th>
@@ -67,7 +31,6 @@
                             <td class="whitespace-nowrap px-4 font-medium text-gray-900">{{ dadosGasto.nome }}
                             </td>
                             <td class="whitespace-nowrap px-4 font-medium text-gray-700">{{ dadosGasto.origem }}</td>
-                            <td class="whitespace-nowrap px-4 font-medium text-gray-700">{{ dadosGasto.categoria }}</td>
                             <td class="whitespace-nowrap px-4 font-medium text-gray-700">{{ dadosGasto.data_gasto }}
                             </td>
                             <td class="whitespace-nowrap px-4 font-medium text-gray-700">{{ dadosGasto.valor }}</td>
@@ -150,7 +113,7 @@ const { valorRetornadoModal, atualizaModal } = modalInjection;
 
 async function abrirModalRemover(dadosGasto: GastoInterface) {
     codigoRemoverGasto.value = dadosGasto.id;
-    abrirModal(`Deseja realmente remover o gasto ${dadosGasto.nome}, de valor ${dadosGasto.valor}`, 'Remover Gasto');
+    abrirModal(`Deseja realmente remover o ganho ${dadosGasto.nome}, de valor ${dadosGasto.valor}`, 'Remover Ganho');
 }
 
 async function abrirModalEdicaoGasto(dadosGasto: GastoInterface) {
