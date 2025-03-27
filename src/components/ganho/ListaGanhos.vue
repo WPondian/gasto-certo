@@ -1,10 +1,7 @@
 <template>
     <div class="grid grid-cols-12 w-full">
         <div class="col-span-10 col-start-2 ">
-            <div class="row flex justify-center my-20">
-                <h1 class="text-2xl font-bold sm:text-3xl uppercase">Listagem de Ganhos</h1>
-            </div>
-            <div class="row flex justify-between items-end mb-5">
+            <div class="row flex justify-end items-end my-32 mb-5">
                 <div class="grupo">
                     <router-link to="/gastos-cadastro"
                         class="inline-block rounded-xl bg-gray-700 px-7 py-1.5 text-white font-bold focus:outline-none focus:ring hover:text-teal-400 hover:px-8 hover:py-2 ease-in duration-300"
@@ -13,50 +10,51 @@
                     </router-link>
                 </div>
             </div>
-            <div v-if="listaDadosTabelaGasto?.length"
-                class="overflow-x-auto rounded-t-lg rounded-lg border border-gray-200">
-                <table class="min-w-full divide-y-2 divide-gray-200 bg-white">
-                    <thead class="bg-gray-700">
-                        <tr>
-                            <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Nome</th>
-                            <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Origem</th>
-                            <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Data</th>
-                            <th class="whitespace-nowrap text-left px-4 py-2 font-medium text-white">Valor</th>
-                            <th class="whitespace-nowrap text-center px-4 py-2 font-medium text-white">Ações</th>
-                        </tr>
-                    </thead>
+            <div class="row flex items-center p-12 rounded-lg justify-center" style="background: #edf2f7;">
+                <section class="bg-white py-10 px-4 lg:px-16"> 
+                <div class="container mx-auto">
+                    <h1 class="text-2xl  text-center font-bold pb-12 sm:text-3xl uppercase">Atividades de ganho</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-28 lg:gap-y-16">
+                        <div class="relative group h-48 flex   flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+                            <a href="#" class="block">
+                                <div class="h-28">
+                                    <div
+                                        class="absolute -top-20 lg:top-[-10%] left-[5%] z-40  group-hover:top-[-40%] group-hover:opacity-[0.9]   duration-300 w-[90%] h-48 bg-red-500 rounded-xl justify-items-center align-middle">
+                                        <img src="https://epicpadprinting.com/public/img/indus/Automotive.png"
+                                            class="w-36 h-36  mt-6 m-auto" alt="Automotive" title="Automotive" loading="lazy"
+                                            width="200" height="200">
+                                    </div>
+                                </div>
+                                <div class="p-6   z-10 w-full   ">
+                                    <p
+                                        class="mb-2 inline-block text-tg text-center w-full  text-xl  font-sans  font-semibold leading-snug tracking-normal   antialiased">
+                                        Automotive
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
 
-                    <tbody class="divide-y divide-gray-200">
-                        <tr v-for="dadosGasto in listaDadosTabelaGasto" :key="dadosGasto.id" class="shadowNow">
-                            <td class="whitespace-nowrap px-4 font-medium text-gray-900">{{ dadosGasto.nome }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 font-medium text-gray-700">{{ dadosGasto.origem }}</td>
-                            <td class="whitespace-nowrap px-4 font-medium text-gray-700">{{ dadosGasto.data_gasto }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 font-medium text-gray-700">{{ dadosGasto.valor }}</td>
-                            <td class="whitespace-nowrap flex justify-center text-center px-4 py-1 text-gray-700">
-                                <div class='has-tooltip'>
-                                    <span
-                                        class='tooltip rounded shadow-lg p-1 bg-gray-700 text-white text-sm font-medium -mt-8 -ml-4'>Remover</span>
-                                    <button type="button" @click="abrirModalRemover(dadosGasto)"
-                                        class="inline-block px-2.5 py-1 rounded-full bg-gray-700 text-white font-medium focus:outline-none focus:ring hover:bg-red-600">
-                                    </button>
+                        <div class="relative group h-48 flex   flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+                            <a href="#" class="block">
+                                <div class="h-28">
+                                    <div
+                                        class="absolute -top-20 lg:top-[-10%] left-[5%] z-40  group-hover:top-[-40%] group-hover:opacity-[0.9]   duration-300 w-[90%] h-48 bg-red-500 rounded-xl justify-items-center align-middle">
+                                        <img src="https://epicpadprinting.com/public/img/indus/Toys-and-Baby-Products.png"
+                                            class="w-36 h-36  mt-6 m-auto" alt="Toys and Baby Products"
+                                            title="Toys and Baby Products" loading="lazy" width="200" height="200">
+                                    </div>
                                 </div>
-                                <div class='has-tooltip'>
-                                    <span
-                                        class='tooltip rounded shadow-lg p-1 bg-gray-700 text-white text-sm font-medium -mt-8 ml-2'>Editar</span>
-                                    <button type="button" @click="abrirModalEdicaoGasto(dadosGasto)"
-                                        class="inline-block px-2 py-1 ml-4 rounded-full bg-gray-700 text-white font-medium focus:outline-none focus:ring hover:bg-teal-500">
-                                        <font-awesome-icon icon="fa-regular fa-pen-to-square" />
-                                    </button>
+                                <div class="p-6   z-10 w-full   ">
+                                    <p
+                                        class="mb-2 inline-block text-tg text-center w-full  text-xl  font-sans  font-semibold leading-snug tracking-normal   antialiased">
+                                        Toys and Baby Products
+                                    </p>
                                 </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div v-if="!listaDadosTabelaGasto?.length" class="row flex justify-center mt-40">
-                <h3 class="text-gray-400 font-semibold text-5xl">Nenhum Gasto Informado.</h3>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                </section>
             </div>
         </div>
     </div>
