@@ -19,16 +19,16 @@
                             <a href="#" class="block">
                                 <div class="h-28">
                                     <div
-                                        class="absolute -top-20 lg:top-[-10%] left-[5%] z-40  group-hover:top-[-40%] group-hover:opacity-[0.9]   duration-300 w-[90%] h-48 bg-red-500 rounded-xl justify-items-center align-middle">
+                                        class="absolute -top-20 lg:top-[-10%] left-[5%] z-40  group-hover:top-[-40%] group-hover:opacity-[0.9]   duration-300 w-[90%] h-48 bg-blue-500 rounded-xl justify-items-center align-middle">
                                         <img src="https://epicpadprinting.com/public/img/indus/Automotive.png"
                                             class="w-36 h-36  mt-6 m-auto" alt="Automotive" title="Automotive" loading="lazy"
                                             width="200" height="200">
                                     </div>
                                 </div>
-                                <div class="p-6   z-10 w-full   ">
+                                <div class="p-6  z-10 w-full   ">
                                     <p
                                         class="mb-2 inline-block text-tg text-center w-full  text-xl  font-sans  font-semibold leading-snug tracking-normal   antialiased">
-                                        Automotive
+                                        Emprego
                                     </p>
                                 </div>
                             </a>
@@ -44,10 +44,10 @@
                                             title="Toys and Baby Products" loading="lazy" width="200" height="200">
                                     </div>
                                 </div>
-                                <div class="p-6   z-10 w-full   ">
+                                <div class="p-6 z-10 w-full   ">
                                     <p
                                         class="mb-2 inline-block text-tg text-center w-full  text-xl  font-sans  font-semibold leading-snug tracking-normal   antialiased">
-                                        Toys and Baby Products
+                                        Youtube
                                     </p>
                                 </div>
                             </a>
