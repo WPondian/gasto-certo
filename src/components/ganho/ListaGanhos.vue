@@ -3,7 +3,7 @@
         <div class="col-span-10 col-start-2 ">
             <div class="row flex justify-end items-end my-32 mb-5">
                 <div class="grupo">
-                    <router-link to="/gastos-cadastro"
+                    <router-link to="/ganhos-cadastro"
                         class="inline-block rounded-xl bg-gray-700 px-7 py-1.5 text-white font-bold focus:outline-none focus:ring hover:text-teal-400 hover:px-8 hover:py-2 ease-in duration-300"
                         href="#">
                         <font-awesome-icon icon="fa-solid fa-plus" /> Adicionar Ganho

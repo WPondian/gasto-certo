@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/home.vue';
-import GastosListagem from '../views/gastos/listagem-gastos.vue';
 import GastoCadastro from '../views/gastos/cadastro-gastos.vue';
+import GastosListagem from '../views/gastos/listagem-gastos.vue';
+import GanhosCadastro from '../views/ganhos/cadastro-ganhos.vue';
 import GanhosListagem from '../views/ganhos/listagem-ganhos.vue';
 import notFound from '../views/notFound/not-found.vue';
 
@@ -26,6 +27,11 @@ const routes = [
         path: '/ganhos',
         name: 'GanhosListagem',
         component: GanhosListagem
+    },
+    {
+        path: '/ganhos-cadastro',
+        name: 'GanhosCadastro',
+        component: GanhosCadastro
     }
 ];
 

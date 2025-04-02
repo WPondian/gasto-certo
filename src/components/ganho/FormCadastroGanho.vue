@@ -3,40 +3,27 @@
         <div class="col-span-4 col-start-5 content-center">
             <div class="border py-10 rounded-2xl shadow-2xl">
                 <div class="mx-auto max-w-lg text-center">
-                    <h1 class="text-2xl font-bold sm:text-3xl uppercase">Cadastrar Ganho</h1>
+                    <h1 class="text-2xl font-bold sm:text-3xl uppercase">Cadastrar Fonte de Renda</h1>
                 </div>
 
-                <form id="cadastroGasto" autocomplete="off" class="mx-auto mb-0 mt-2 max-w-md space-y-4">
-                    <div class="py-1 px-5">
-                        <label for="nomeGasto" class="block font-medium text-gray-700"> Nome*: </label>
+                <form id="cadastroGasto" @submit.prevent="uploadImage" autocomplete="off" class="mx-auto mb-0 mt-2 max-w-md space-y-4">
+                    <div class="py-4 mx-4">
+                        <label for="nomeRenda" class="block font-medium text-gray-700"> Nome*: </label>
 
-                        <input type="text" v-model="nomeGasto" id="nomeGasto" placeholder="Informe o nome do gasto..."
+                        <input type="text" v-model="nomeRenda" id="nomeRenda" placeholder="Informe o nome da fonte de renda."
                             class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
                             required />
                     </div>
-                    <div class="py-1 px-5">
-                        <label for="origemGasto" class="block font-medium text-gray-700"> Origem*: </label>
-
-                        <input type="text" v-model="origemGasto" id="origemGasto"
-                            placeholder="Informe a origem do gasto..."
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
-                            required />
-                    </div>
-                    <div class="py-1 px-5">
-                        <label for="valorGasto" class="block font-medium text-gray-700"> Valor*: </label>
-                        <input type="text" v-model="valorGasto" v-money3="config" id="valorGasto" maxlength="10"
-                            placeholder="Informe a origem do gasto..."
-                            class="mt-1 w-full rounded-lg border-padrao-campo text-gray-600 font-semibold focus:ring-0 focus:outline-none focus:border-teal-400 p-2"
-                            required />
-                    </div>
-                    <div class="py-1 px-5">
-                        <div class="relative">
-                            <label for="dataGasto" class="block font-medium text-gray-700"> Data*: </label>
-                            <VueDatePicker id="dataGasto" :format="format"
-                                class="mt-1 rounded-md border-padrao-campo text-gray-600 font-semibold"
-                                :enable-time-picker="false" placeholder="Data" v-model="dataGasto">
-                            </VueDatePicker>
+                    <div class="border-2 mx-4 rounded-lg border-gray-700 hover:border-teal-400 p-10 pb-4 text-center">
+                        <div v-if="imagePreview" class="mt-4">
+                            <p class="mb-2">Preview da Imagem:</p>
+                            <img :src="imagePreview" alt="Imagem Preview" class="w-full h-auto border rounded"/>
                         </div>
+                        <div class="text-gray-700 font-semibold pb-10 pt-5" v-else>
+                            <p>Nenhuma imagem carregada.</p>
+                        </div>
+                        <input @change="onFileChange" type="file" id="image" accept="image/*" class="border p-2 w-full hidden" required />
+                        <label for="image" class="inline-block cursor-pointer rounded-xl bg-gray-700 px-7 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-gray-600 ease-in duration-300" type="submit">Enviar Imagem</label>
                     </div>
                     <div class="flex pt-6 items-center justify-center">
                         <router-link to="/ganhos" id="btnCancelarCadastro"
@@ -56,34 +43,14 @@
 </template>
 
 <script setup lang="ts">
-import { unformat } from 'v-money3';
 import { inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-let nomeGasto = ref<string>('');
-let origemGasto = ref<string>('');
-let valorGasto = ref<string>('');
-let categoriaGasto = ref<string>('');
-let dataGasto = ref<Date>(new Date);
-
-const config: object = {
-    prefix: 'R$ ',
-    thousands: '.',
-    decimal: ',',
-    precision: 2,
-    disableNegative: true,
-};
-
-const format = (date:Date) => {
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-
-  return `${day}/${month < 10 ? '0' + month : month}/${year}`;
-}
-
+let nomeRenda = ref<string>('');
+let image = ref<File | null>(null);
+let imagePreview = ref<string>('');
 
 // Definindo o tipo da função que será injetada
 type MinhaFuncaoType = (texto: string, tipo: string, tempo: number) => void;
@@ -93,6 +60,30 @@ const mostrarMensagem = inject<MinhaFuncaoType>('mostrarMensagem', () => { });
 const abrirCarregando = inject('abrirCarregando', () => { });
 const fecharCarregando = inject('fecharCarregando', () => { });
 
+const onFileChange = (e: Event) => {
+      const file = (e.target as HTMLInputElement).files?.[0] || null;
+      image.value = file;
+};
+
+const submitForm = async () => {
+    if (!image.value) return;
+
+    const formData = new FormData();
+    formData.append('name', name.value);
+    formData.append('image', image.value);
+
+    try {
+    const response = await axios.post('http://localhost:3000/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    console.log('Registro salvo:', response.data);
+    name.value = '';
+    image.value = null;
+    } catch (error) {
+    console.error('Erro ao salvar:', error);
+    }
+};
+
 async function enviarDados() {
     abrirCarregando();
 
@@ -101,11 +92,7 @@ async function enviarDados() {
     }
 
     const dados: object = {
-        nomeGasto: nomeGasto.value as string,
-        origemGasto: origemGasto.value as string,
-        categoriaGasto: categoriaGasto.value as string,
-        valorGasto: unformat(valorGasto.value, config) as string,
-        dataGasto: dataGasto.value.toDateString(),
+        nomeRenda: nomeRenda.value as string,
     };
 
 
@@ -128,36 +115,7 @@ async function enviarDados() {
 
             }, 4000);
         });
-}
-
-function validarDadosCadastro(): boolean {
-    let camposObrigatorios: Element[] = Array.from(document.querySelectorAll('input[required], select[required]'));
-
-    let camposValidados: boolean = true;
-
-    camposObrigatorios.reverse().forEach((campo) => {
-        if (campo instanceof HTMLInputElement || campo instanceof HTMLSelectElement) {
-            campo.value = campo.value.trim();
-            campo.classList.add('validado');
-            campo.classList.remove('invalido');
-
-            if (!campo.value || campo.value == 'R$ 0,00') {
-                mostrarMensagem('Preencha os campos obrigatorios!', 'warning', 4000);
-                campo.classList.remove('validado');
-                campo.classList.add('invalido');
-                campo.focus();
-                camposValidados = false;
-            }
-        }
-    })
-
-    if (camposValidados && !dataGasto.value) {
-        mostrarMensagem('Por favor, informe a data do gasto!', 'warning', 4000);
-        camposValidados = false;
-    }
-
-    return camposValidados;
-}
+};
 
 </script>
 
