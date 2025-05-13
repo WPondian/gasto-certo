@@ -6,7 +6,7 @@
                     <h1 class="text-2xl font-bold sm:text-3xl uppercase">Cadastrar Fonte de Renda</h1>
                 </div>
 
-                <form id="cadastroGasto" @submit.prevent="uploadImage" autocomplete="off" class="mx-auto mb-0 mt-2 max-w-md space-y-4">
+                <form id="cadastroGasto" @submit.prevent="submitForm" autocomplete="off" class="mx-auto mb-0 mt-2 max-w-md space-y-4">
                     <div class="py-4 mx-4">
                         <label for="nomeRenda" class="block font-medium text-gray-700"> Nome*: </label>
 
@@ -31,7 +31,7 @@
                             <font-awesome-icon icon="fa-solid fa-left-long" />
                             Cancelar
                         </router-link>
-                        <button type="button" @click="enviarDados"
+                        <button type="submit"
                             class="inline-block rounded-xl bg-gray-700 px-7 py-2 mt-2 text-white font-medium focus:outline-none focus:ring hover:bg-gray-600 hover:px-8 hover:py-3 hover:mt-0 ease-in duration-300">
                             Cadastrar
                         </button>
@@ -69,51 +69,23 @@ const submitForm = async () => {
     if (!image.value) return;
 
     const formData = new FormData();
-    formData.append('name', name.value);
+    formData.append('name', nomeRenda.value);
     formData.append('image', image.value);
 
-    try {
-    const response = await axios.post('http://localhost:3000/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    console.log('Registro salvo:', response.data);
-    name.value = '';
-    image.value = null;
-    } catch (error) {
-    console.error('Erro ao salvar:', error);
-    }
-};
-
-async function enviarDados() {
-    abrirCarregando();
-
-    if (!validarDadosCadastro()) {
-        return;
-    }
-
-    const dados: object = {
-        nomeRenda: nomeRenda.value as string,
-    };
-
-
-    await fetch('https://api-gasto-certo.vercel.app/api/cadastrar-gasto', {
+    
+    await fetch('https://api-gasto-certo.vercel.app/api/cadastro-ganho', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dados)
-    }).then(response => response.ok ? response.json() : Promise.reject(response))
+        body: formData
+    })
+    .then(response => response.ok ? response.json() : Promise.reject(response))
         .then((retorno) => {
             if (retorno.error) {
                 console.error(retorno.error);
                 return mostrarMensagem('Erro ao cadastrar gastos!', 'error', 4000);
             }
 
-            setTimeout(() => {
-                fecharCarregando();
-                router.push('/gastos');
-
-            }, 4000);
+            nomeRenda.value = '';
+            image.value = null;
         });
 };
 
