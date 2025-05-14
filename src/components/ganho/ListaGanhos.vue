@@ -15,12 +15,12 @@
                     <div class="container mx-auto">
                         <h1 class="text-2xl  text-center font-bold pb-12 sm:text-3xl uppercase">Atividades de ganho</h1>
                         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-28 lg:gap-y-16">
-                            <div class="relative group h-48 flex   flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+                            <div v-for="ganho in listaDadosTabelaGanho" :key="ganho.id" class="relative group h-48 flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
                                 <a href="#" class="block">
                                     <div class="h-28">
                                         <div
-                                            class="absolute -top-20 lg:top-[-10%] left-[5%] z-40  group-hover:top-[-40%] group-hover:opacity-[0.9]   duration-300 w-[90%] h-48 bg-blue-500 rounded-xl justify-items-center align-middle">
-                                            <img src="../../assets/ganho-trabalho.png"
+                                            class="absolute -top-20 lg:top-[-10%] left-[5%] z-40  group-hover:top-[-40%] group-hover:opacity-[0.9] duration-300 w-[90%] h-48  rounded-xl justify-items-center align-middle" :style="{backgroundColor: ganho.cor_renda}">
+                                            <img :src="ganho.caminho_imagem"
                                                 class="w-36 h-36  mt-6 m-auto" alt="Automotive" title="Automotive" loading="lazy"
                                                 width="200" height="200">
                                         </div>
@@ -28,26 +28,7 @@
                                     <div class="p-6 z-10 w-full">
                                         <p
                                             class="mb-2 inline-block text-tg text-center w-full text-xl font-sans font-semibold leading-snug tracking-normal   antialiased">
-                                            Emprego
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="relative group h-48 flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
-                                <a href="#" class="block">
-                                    <div class="h-28">
-                                        <div
-                                            class="absolute -top-20 lg:top-[-10%] left-[5%] z-40 group-hover:top-[-40%] group-hover:opacity-[0.9]   duration-300 w-[90%] h-48 bg-red-500 rounded-xl justify-items-center align-middle">
-                                            <img src="../../assets/ganho-youtube.png"
-                                                class="w-36 h-36 mt-6 m-auto" alt="Toys and Baby Products"
-                                                title="Toys and Baby Products" loading="lazy" width="200" height="200">
-                                        </div>
-                                    </div>
-                                    <div class="p-6 z-10 w-full ">
-                                        <p
-                                            class="mb-2 inline-block text-tg text-center w-full text-xl font-sans font-semibold leading-snug tracking-normal   antialiased">
-                                            Youtube
+                                            {{ganho.nome}}
                                         </p>
                                     </div>
                                 </a>
@@ -58,25 +39,16 @@
             </div>
         </div>
     </div>
-    <ModalEdicao @fechar-modal-edicao="fecharModalEdicao" @atualizar-lista-gastos="listarDadosTabelaGastos" :codigoGasto="codigoEdicaoGasto"></ModalEdicao>
 </template>
 
 <script setup lang="ts">
-import ModalEdicao from '../gasto/ModalEdicaoGasto.vue';
 
-import { format } from 'v-money3';
 import { onMounted, ref, inject, watch, Ref } from 'vue';
-import { GastoInterface } from '../../types/Gasto';
+import { GanhoInterface } from '../../types/Ganho';
 
-let nomeGastoFiltro = ref<string>('');
-let categoriaGastoFiltro = ref<string>('');
-let codigoRemoverGasto = ref<number>(0);
-let codigoEdicaoGasto = ref<number>(0);
-
-const fecharModalEdicao = () => {
-    codigoEdicaoGasto.value = 0;
-};
-
+let nomeGanhoFiltro = ref<string>('');
+let codigoRemoverGanho = ref<number>(0);
+let codigoEdicaoGanho = ref<number>(0);
 
 type FuncaoMensagemType = (texto: string, tipo: string, tempo: number) => void;
 type FuncaoModalType = (texto: string, titulo: string) => void;
@@ -86,16 +58,7 @@ interface modalInjection {
     atualizaModal: (newLocation: boolean) => void;
 }
 
-const config: object = {
-    prefix: 'R$ ',
-    suffix: '',
-    thousands: '.',
-    decimal: ',',
-    precision: 2,
-    disableNegative: true,
-}
-
-let listaDadosTabelaGasto = ref<GastoInterface[]>();
+let listaDadosTabelaGanho = ref<GanhoInterface[]>();
 
 const mostrarMensagem = inject<FuncaoMensagemType>('mostrarMensagem', () => { });
 
@@ -109,52 +72,35 @@ if (!modalInjection) {
 
 const { valorRetornadoModal, atualizaModal } = modalInjection;
 
-async function abrirModalRemover(dadosGasto: GastoInterface) {
-    codigoRemoverGasto.value = dadosGasto.id;
-    abrirModal(`Deseja realmente remover o ganho ${dadosGasto.nome}, de valor ${dadosGasto.valor}`, 'Remover Ganho');
+async function abrirModalRemover(dadosGanho: GanhoInterface) {
+    codigoRemoverGanho.value = dadosGanho.id;
+    abrirModal(`Deseja realmente remover o ganho ${dadosGanho.nome}`, 'Remover Ganho');
 }
 
-async function abrirModalEdicaoGasto(dadosGasto: GastoInterface) {
-    codigoEdicaoGasto.value = dadosGasto.id;
+async function abrirModalEdicaoGanho(dadosGanho: GanhoInterface) {
+    codigoEdicaoGanho.value = dadosGanho.id;
 }
 
-async function listarDadosTabelaGastos() {
-    await fetch(`https://api-gasto-certo.vercel.app/api/buscar-gastos?nomeGasto=${nomeGastoFiltro.value}&categoriaGasto=${categoriaGastoFiltro.value}`)
+async function listarDadosTabelaGanhos() {
+    await fetch(`https://api-gasto-certo.vercel.app/api/buscar-ganhos?nome=${nomeGanhoFiltro.value}`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then((retorno) => {
 
             if (retorno.error) {
                 console.error(retorno.error);
-                return mostrarMensagem('Erro ao listar gastos!', 'error', 4000);
+                return mostrarMensagem('Erro ao listar ganhos!', 'error', 4000);
             }
 
-            retorno.result.forEach((element: GastoInterface) => {
-                element.data_gasto = formatarDataBR(element.data_gasto);
-                element.valor = format(element.valor, config);
-            });
-
-            listaDadosTabelaGasto.value = retorno.result;
+            listaDadosTabelaGanho.value = retorno.result;
         });
 }
 
-function formatarDataBR(stringData: string) {
-    if (stringData) {
-        const data = new Date(stringData);
-        return data.toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        });
-    }
-    return "";
-}
-
-async function deletarGasto() {
-    let idGasto: Pick<GastoInterface, "id"> = {
-        id: codigoRemoverGasto.value as number
+async function deletarGanho() {
+    let idGanho: Pick<GanhoInterface, "id"> = {
+        id: codigoRemoverGanho.value as number
     };
 
-    await fetch(`https://api-gasto-certo.vercel.app/api/deletar-gasto/${idGasto.id}?deletar-gasto`, {
+    await fetch(`https://api-ganho-certo.vercel.app/api/deletar-ganho/${idGanho.id}?deletar-ganho`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -165,22 +111,22 @@ async function deletarGasto() {
 
             if (retorno.error) {
                 console.error(retorno.error);
-                return mostrarMensagem('Erro ao remover gasto!', 'error', 4000);
+                return mostrarMensagem('Erro ao remover ganho!', 'error', 4000);
             }
 
-            mostrarMensagem('Gasto removido com sucesso!', 'success', 4000);
+            mostrarMensagem('ganho removido com sucesso!', 'success', 4000);
             atualizaModal(false);
-            await listarDadosTabelaGastos();
+            await listarDadosTabelaGanhos();
         });
 }
 
 onMounted(async () => {
-    await listarDadosTabelaGastos();
+    await listarDadosTabelaGanhos();
 })
 
 watch(valorRetornadoModal, async (novoValor) => {
     if (novoValor) {
-        await deletarGasto();
+        await deletarGanho();
     }
 });
 

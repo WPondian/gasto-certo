@@ -92,7 +92,7 @@ provide('fecharCarregando', fecharCarregando);
     <Mensagem :mostrar="dadosMensagem.mostrar" :texto="dadosMensagem.texto" :tempo="dadosMensagem.tempo"
         :tipo="dadosMensagem.tipo" @update-value="atualizaMensagem">
     </Mensagem>
-    <div class="flex bg-slate-600">
+    <div class="flex">
         <!-- <div class="bg-green-400 h-80 w-48"></div>
         <div class="bg-blue-400 h-80 w-48"></div> -->
         <Menu></Menu>
