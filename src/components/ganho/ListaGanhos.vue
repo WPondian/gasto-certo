@@ -4,7 +4,7 @@
             <div class="row flex justify-end items-end my-32 mb-5">
                 <div class="grupo">
                     <router-link to="/ganhos-cadastro"
-                        class="inline-block rounded-xl bg-gray-700 px-7 py-1.5 text-white font-bold focus:outline-none focus:ring hover:text-teal-400 hover:px-8 hover:py-2 ease-in duration-300"
+                        class="inline-block rounded-xl min-h bg-gray-700 px-7 py-1.5 text-white font-bold focus:outline-none focus:ring hover:text-teal-400 hover:px-8 hover:py-2 ease-in duration-300"
                         href="#">
                         <font-awesome-icon icon="fa-solid fa-plus" /> Adicionar Ganho
                     </router-link>
@@ -62,8 +62,6 @@ let listaDadosTabelaGanho = ref<GanhoInterface[]>();
 
 const mostrarMensagem = inject<FuncaoMensagemType>('mostrarMensagem', () => { });
 
-const abrirModal = inject<FuncaoModalType>('abrirModal', () => { });
-
 const modalInjection = inject<modalInjection>('valorModal');
 
 if (!modalInjection) {
@@ -71,15 +69,6 @@ if (!modalInjection) {
 }
 
 const { valorRetornadoModal, atualizaModal } = modalInjection;
-
-async function abrirModalRemover(dadosGanho: GanhoInterface) {
-    codigoRemoverGanho.value = dadosGanho.id;
-    abrirModal(`Deseja realmente remover o ganho ${dadosGanho.nome}`, 'Remover Ganho');
-}
-
-async function abrirModalEdicaoGanho(dadosGanho: GanhoInterface) {
-    codigoEdicaoGanho.value = dadosGanho.id;
-}
 
 async function listarDadosTabelaGanhos() {
     await fetch(`https://api-gasto-certo.vercel.app/api/buscar-ganhos?nome=${nomeGanhoFiltro.value}`)
